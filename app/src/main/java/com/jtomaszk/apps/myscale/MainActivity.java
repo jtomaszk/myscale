@@ -1,50 +1,36 @@
 package com.jtomaszk.apps.myscale;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
-import com.google.android.gms.fitness.data.DataSource;
-import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
-import com.google.android.gms.fitness.data.Value;
-import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
+import com.jtomaszk.apps.myscale.model.BMI;
+import com.jtomaszk.apps.myscale.model.BMIModel;
 import com.jtomaszk.apps.myscale.repository.GoogleApiClientWrapper;
 import com.jtomaszk.apps.myscale.repository.WeightRepository;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -115,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    float last = 0;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -140,15 +128,16 @@ public class MainActivity extends AppCompatActivity {
                                 Log.i(TAG, "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
                                 Log.i(TAG, "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
                                 for (Field field : dp.getDataType().getFields()) {
+                                    float weight = dp.getValue(field).asFloat();
+                                    last = weight;
                                     Log.i(TAG, "\tField: " + field.getName() +
-                                            " Value: " + dp.getValue(field).asFloat());
+                                            " Value: " + weight);
                                     list.add(convertToViewType(dp, field));
 
-                                    values.add(new PointValue(dp.getTimestamp(TimeUnit.DAYS), dp.getValue(field).asFloat()));
+                                    values.add(new PointValue(dp.getTimestamp(TimeUnit.DAYS), weight));
                                 }
                             }
                         }
-
 
                         ListView listView = (ListView) findViewById(R.id.listView);
                         listView.setAdapter(new ArrayAdapter<>(context, R.layout.simple_list_item_1, list));
@@ -169,9 +158,18 @@ public class MainActivity extends AppCompatActivity {
                         chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
 
                         findViewById(R.id.loading_spinner).setVisibility(View.GONE);
+
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                        int height = Integer.valueOf(prefs.getString("pref_height", "180"));
+                        BMIModel bmiModel = new BMIModel(height, last);
+
+                        TextView bmiText = (TextView) findViewById(R.id.bmiView);
+                        BMI bmi = bmiModel.bmi();
+                        bmiText.setText("height=" + height + " last=" + last + " bmi=" + bmi.getBmi() + " cat=" + bmi.getCategory());
                     }
                 }
         );
+
     }
 
     @Override
