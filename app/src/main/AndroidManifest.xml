@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
     package="com.jtomaszk.apps.myscale">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -7,17 +7,23 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
-        <!--android:icon="@mipmap/ic_launcher"-->
+    <!-- android:icon="@mipmap/ic_launcher" -->
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:icon"
+        android:name="com.orm.SugarApp"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <meta-data android:name="DATABASE" android:value="my_scale_database.db" />
         <meta-data android:name="VERSION" android:value="1" />
         <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.jtomaszk.apps.myscale" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.jtomaszk.apps.myscale.entity" />
 
         <activity
             android:name=".MainActivity"
@@ -30,8 +36,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddWeightActivity"/>
-        <activity android:name=".SettingsActivity" android:label="@string/title_activity_settings"/>
+        <activity android:name=".AddWeightActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".HistoryActivity"
+            android:label="@string/title_activity_history"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

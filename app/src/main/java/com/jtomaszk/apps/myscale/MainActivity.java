@@ -23,10 +23,13 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.result.DataReadResult;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
+import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.model.BMI;
 import com.jtomaszk.apps.myscale.model.BMIModel;
 import com.jtomaszk.apps.myscale.repository.GoogleApiClientWrapper;
 import com.jtomaszk.apps.myscale.repository.WeightRepository;
+import com.orm.query.Select;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
      * a known auth error is being resolved, such as showing the account chooser or presenting a
      * consent dialog. This avoids common duplications as might happen on screen rotations, etc.
      */
-    private static final String TAG = "AAAA";
+    private static final String TAG = "MainActivity";
 
     private Context context;
 
@@ -94,12 +97,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @NonNull
-    private String convertToViewType(DataPoint dp, Field field) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return dateFormat.format(dp.getTimestamp(TimeUnit.MILLISECONDS)) + " " + dp.getValue(field).toString();
-    }
-
 
     float last = 0;
 
@@ -109,55 +106,66 @@ public class MainActivity extends AppCompatActivity {
 
         final List<PointValue> values = new ArrayList<>();
 
+        WeightEntryDao dao = new WeightEntryDao();
+        List<WeightEntry> list2 = dao.getAll();
+        Log.e(TAG, Arrays.toString(list2.toArray()));
+
+        for (WeightEntry entry : list2) {
+            values.add(new PointValue(entry.getDays(), entry.getWeight()));
+        }
+
+        //In most cased you can call data model methods in builder-pattern-like manner.
+        Line line = new Line(values).setColor(Color.BLUE).setCubic(true).setHasPoints(true);
+        List<Line> lines = new ArrayList<Line>();
+        lines.add(line);
+
+        LineChartData data = new LineChartData();
+        data.setLines(lines);
+        Log.i(TAG, Arrays.toString(lines.toArray()));
+
+        LineChartView chart = (LineChartView) findViewById(R.id.chart);
+        chart.setLineChartData(data);
+        chart.setInteractive(true);
+        chart.setZoomType(ZoomType.HORIZONTAL);
+        chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
+
+        findViewById(R.id.loading_spinner).setVisibility(View.GONE);
+
 
         WeightRepository.getInstance(context).readAll(
                 new ResultCallback<DataReadResult>() {
                     @Override
                     public void onResult(DataReadResult dataReadResult) {
+                        WeightEntryDao dao = new WeightEntryDao();
+
+//                        List<WeightEntry> list3 = WeightEntry.findWithQuery(WeightEntry.class, "select id, avg(weight) as weight, days, date_time_milliseconds, synced, hash, data_source from weight_entry group by days");
+//                        Select.from(WeightEntry.class)
+//                                .groupBy("days")
+//                                .list();
+//                        Log.e(TAG, Arrays.toString(list3.toArray()));
 
                         ArrayList<String> list = new ArrayList<String>();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-                        Log.i(TAG, "bb!!!" + dataReadResult.toString() + " " + dataReadResult.getDataSets().size());
+//                        Log.i(TAG, "bb!!!" + dataReadResult.toString() + " " + dataReadResult.getDataSets().size());
                         for (DataSet ds : dataReadResult.getDataSets()) {
-                            Log.i(TAG, "Data set:" + ds.getDataType() + " " + ds.getDataPoints().size());
+//                            Log.i(TAG, "Data set:" + ds.getDataType() + " " + ds.getDataPoints().size());
 
                             for (DataPoint dp : ds.getDataPoints()) {
-                                Log.i(TAG, "Data point:");
-                                Log.i(TAG, "\tType: " + dp.getDataType().getName());
-                                Log.i(TAG, "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-                                Log.i(TAG, "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
+//                                Log.i(TAG, "Data point:");
+//                                Log.i(TAG, "\tType: " + dp.getDataType().getName());
+//                                Log.i(TAG, "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
+//                                Log.i(TAG, "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
                                 for (Field field : dp.getDataType().getFields()) {
                                     float weight = dp.getValue(field).asFloat();
                                     last = weight;
-                                    Log.i(TAG, "\tField: " + field.getName() +
-                                            " Value: " + weight);
-                                    list.add(convertToViewType(dp, field));
+//                                    Log.i(TAG, "\tField: " + field.getName() + " Value: " + weight);
 
-                                    values.add(new PointValue(dp.getTimestamp(TimeUnit.DAYS), weight));
+                                    dao.addIfNotMatchedFromGooleFit(dp.getTimestamp(TimeUnit.MILLISECONDS), dp.hashCode(), weight);
+//                                    values.add(new PointValue(dp.getTimestamp(TimeUnit.DAYS), weight));
                                 }
                             }
                         }
-
-                        ListView listView = (ListView) findViewById(R.id.listView);
-                        listView.setAdapter(new ArrayAdapter<>(context, R.layout.simple_list_item_1, list));
-
-                        //In most cased you can call data model methods in builder-pattern-like manner.
-                        Line line = new Line(values).setColor(Color.BLUE).setCubic(true).setHasPoints(true);
-                        List<Line> lines = new ArrayList<Line>();
-                        lines.add(line);
-
-                        LineChartData data = new LineChartData();
-                        data.setLines(lines);
-                        Log.i(TAG, Arrays.toString(lines.toArray()));
-
-                        LineChartView chart = (LineChartView) findViewById(R.id.chart);
-                        chart.setLineChartData(data);
-                        chart.setInteractive(true);
-                        chart.setZoomType(ZoomType.HORIZONTAL);
-                        chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
-
-                        findViewById(R.id.loading_spinner).setVisibility(View.GONE);
 
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                         int height = Integer.valueOf(prefs.getString("pref_height", "180"));
@@ -207,10 +215,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.history_activity:
+                intent = new Intent(this, HistoryActivity.class);
+                startActivity(intent);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
