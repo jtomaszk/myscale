@@ -14,6 +14,14 @@ public class WeightEntryDao {
         return WeightEntry.listAll(WeightEntry.class);
     }
 
+    public List<WeightEntry> findNotSynced() {
+        return WeightEntry.find(WeightEntry.class, "hash is null");
+    }
+
+    public void save(List<WeightEntry> list) {
+        WeightEntry.saveInTx(list);
+    }
+
     public WeightEntry findByHash(int hash) {
         List<WeightEntry> result = WeightEntry.find(WeightEntry.class, "hash = ?", String.valueOf(hash));
         if (result.isEmpty()) {
@@ -37,6 +45,7 @@ public class WeightEntryDao {
         entry.setDataSource(DataSource.GOOGLE_FIT);
         entry.setDateTimeMilliseconds(time);
         entry.setHash(hash);
+        entry.setSynced(true);
         entry.setWeight(weight);
         entry.save();
     }

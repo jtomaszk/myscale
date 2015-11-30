@@ -3,49 +3,30 @@ package com.jtomaszk.apps.myscale.repository;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.Fitness;
-import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataType;
-import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
-import com.jtomaszk.apps.myscale.MainActivity;
-import com.jtomaszk.apps.myscale.R;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import lecho.lib.hellocharts.gesture.ContainerScrollType;
-import lecho.lib.hellocharts.gesture.ZoomType;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.view.LineChartView;
 
 /**
  * Created by jarema-user on 2015-11-19.
  */
-public class GoogleApiClientWrapper implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public abstract class AbstractFitnessApiClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "GoogleApiClientWrapper";
+    private static final String TAG = "FitnessApiClient";
     public static final int REQUEST_OAUTH = 1000;
     private static final String AUTH_PENDING = "auth_state_pending";
 
@@ -53,27 +34,10 @@ public class GoogleApiClientWrapper implements GoogleApiClient.ConnectionCallbac
 
     private GoogleApiClient mClient;
 
-    private static GoogleApiClientWrapper ourInstance = null;
+    protected Context ctx;
 
-    public static GoogleApiClientWrapper getInstance(Context ctx) {
-//        if (ourInstance == null) {
-            ourInstance = new GoogleApiClientWrapper(ctx);
-//        }
-        return ourInstance;
-    }
-
-    public static GoogleApiClientWrapper getInstance(Context ctx, Bundle savedInstanceState) {
-        if (ourInstance == null) {
-            ourInstance = new GoogleApiClientWrapper(ctx, savedInstanceState);
-        }
-        return ourInstance;
-    }
-
-    private GoogleApiClientWrapper(Context ctx) {
-        this(ctx, null);
-    }
-
-    private GoogleApiClientWrapper(Context ctx, Bundle savedInstanceState) {
+    protected AbstractFitnessApiClient(Context ctx, Bundle savedInstanceState) {
+        this.ctx = ctx;
         if (savedInstanceState != null) {
             authInProgress = savedInstanceState.getBoolean(AUTH_PENDING);
         }
@@ -209,13 +173,11 @@ public class GoogleApiClientWrapper implements GoogleApiClient.ConnectionCallbac
 
     }
 
-    public void insertData(DataSet dataSet, ResultCallback<? super Status> callback) {
-
-        Fitness.HistoryApi.insertData(mClient, dataSet)
-                .setResultCallback(callback);
+    protected Status insertData(DataSet dataSet) {
+        return Fitness.HistoryApi.insertData(mClient, dataSet).await();
     }
 
-    public DataReadRequest getSimpleDataReadRequest(long endTime, long startTime, DataType dataType) {
+    protected DataReadRequest getSimpleDataReadRequest(long endTime, long startTime, DataType dataType) {
 
         return new DataReadRequest.Builder()
                 .read(dataType)
@@ -235,9 +197,8 @@ public class GoogleApiClientWrapper implements GoogleApiClient.ConnectionCallbac
                 .build();
     }
 
-    public void read(DataReadRequest readRequest, ResultCallback<DataReadResult> callback) {
-        Fitness.HistoryApi.readData(mClient, readRequest)
-                .setResultCallback(callback);
+    protected DataReadResult read(DataReadRequest readRequest) {
+        return Fitness.HistoryApi.readData(mClient, readRequest).await();
     }
 
     public void onActivityResult(int resultCode) {

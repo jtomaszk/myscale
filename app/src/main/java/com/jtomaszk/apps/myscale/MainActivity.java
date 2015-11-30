@@ -2,11 +2,8 @@ package com.jtomaszk.apps.myscale;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,29 +11,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.fitness.data.DataPoint;
-import com.google.android.gms.fitness.data.DataSet;
-import com.google.android.gms.fitness.data.Field;
-import com.google.android.gms.fitness.result.DataReadResult;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.model.BMI;
 import com.jtomaszk.apps.myscale.model.BMIModel;
-import com.jtomaszk.apps.myscale.repository.GoogleApiClientWrapper;
-import com.jtomaszk.apps.myscale.repository.WeightRepository;
-import com.orm.query.Select;
+import com.jtomaszk.apps.myscale.model.HeightUtil;
+import com.jtomaszk.apps.myscale.repository.AbstractFitnessApiClient;
+import com.jtomaszk.apps.myscale.services.SynchronizeService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
@@ -47,9 +34,6 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static Logger LOG = Logger.getAnonymousLogger();
-
-
     /**
      * Track whether an authorization activity is stacking over the current activity, i.e. when
      * a known auth error is being resolved, such as showing the account chooser or presenting a
@@ -58,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private Context context;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,24 +55,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addWeightClick();
-
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//
-//                            }
-//                        }).show();
             }
         });
 
         context = this;
-
-
-
-
-        GoogleApiClientWrapper.getInstance(context, savedInstanceState);
-
+//        AbstractFitnessApiClient.getInstance(context, savedInstanceState);
     }
 
     private void addWeightClick() {
@@ -103,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+//        WeightEntry.deleteAll(WeightEntry.class);
 
         final List<PointValue> values = new ArrayList<>();
 
@@ -111,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         Log.e(TAG, Arrays.toString(list2.toArray()));
 
         for (WeightEntry entry : list2) {
+            last = entry.getWeight();
             values.add(new PointValue(entry.getDays(), entry.getWeight()));
         }
 
@@ -131,73 +103,37 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.loading_spinner).setVisibility(View.GONE);
 
+        int height = HeightUtil.readHeight(getBaseContext());
+        BMIModel bmiModel = new BMIModel(height, last);
 
-        WeightRepository.getInstance(context).readAll(
-                new ResultCallback<DataReadResult>() {
-                    @Override
-                    public void onResult(DataReadResult dataReadResult) {
-                        WeightEntryDao dao = new WeightEntryDao();
+        TextView bmiText = (TextView) findViewById(R.id.bmiView);
+        BMI bmi = bmiModel.bmi();
+        if (last > 10) {
+            bmiText.setText("height=" + height + " last=" + last + " bmi=" + bmi.getBmi() + " cat=" + bmi.getCategory());
+        }
 
-//                        List<WeightEntry> list3 = WeightEntry.findWithQuery(WeightEntry.class, "select id, avg(weight) as weight, days, date_time_milliseconds, synced, hash, data_source from weight_entry group by days");
-//                        Select.from(WeightEntry.class)
-//                                .groupBy("days")
-//                                .list();
-//                        Log.e(TAG, Arrays.toString(list3.toArray()));
-
-                        ArrayList<String> list = new ArrayList<String>();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-//                        Log.i(TAG, "bb!!!" + dataReadResult.toString() + " " + dataReadResult.getDataSets().size());
-                        for (DataSet ds : dataReadResult.getDataSets()) {
-//                            Log.i(TAG, "Data set:" + ds.getDataType() + " " + ds.getDataPoints().size());
-
-                            for (DataPoint dp : ds.getDataPoints()) {
-//                                Log.i(TAG, "Data point:");
-//                                Log.i(TAG, "\tType: " + dp.getDataType().getName());
-//                                Log.i(TAG, "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-//                                Log.i(TAG, "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)));
-                                for (Field field : dp.getDataType().getFields()) {
-                                    float weight = dp.getValue(field).asFloat();
-                                    last = weight;
-//                                    Log.i(TAG, "\tField: " + field.getName() + " Value: " + weight);
-
-                                    dao.addIfNotMatchedFromGooleFit(dp.getTimestamp(TimeUnit.MILLISECONDS), dp.hashCode(), weight);
-//                                    values.add(new PointValue(dp.getTimestamp(TimeUnit.DAYS), weight));
-                                }
-                            }
-                        }
-
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                        int height = Integer.valueOf(prefs.getString("pref_height", "180"));
-                        BMIModel bmiModel = new BMIModel(height, last);
-
-                        TextView bmiText = (TextView) findViewById(R.id.bmiView);
-                        BMI bmi = bmiModel.bmi();
-                        bmiText.setText("height=" + height + " last=" + last + " bmi=" + bmi.getBmi() + " cat=" + bmi.getCategory());
-                    }
-                }
-        );
-
+//        SynchronizeService.startActionSyncWeight(context, true);
+        SynchronizeService.startActionSyncHeight(context);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        GoogleApiClientWrapper.getInstance(context).onStop();
+//        AbstractFitnessApiClient.getInstance(context).onStop();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "onActivityResult " + requestCode + " " + resultCode + " " + data);
-        if (requestCode == GoogleApiClientWrapper.REQUEST_OAUTH) {
-            GoogleApiClientWrapper.getInstance(context).onActivityResult(resultCode);
-        }
+//        if (requestCode == AbstractFitnessApiClient.REQUEST_OAUTH) {
+//            AbstractFitnessApiClient.getInstance(context).onActivityResult(resultCode);
+//        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        GoogleApiClientWrapper.getInstance(context).onSaveInstanceState(outState);
+//        AbstractFitnessApiClient.getInstance(context).onSaveInstanceState(outState);
     }
 
     @Override

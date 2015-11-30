@@ -13,7 +13,7 @@ public class BMI {
         this.bmi = bmi;
     }
 
-    public BmiCategory getCategory() {
-        return BmiCategory.findByBMIValue(bmi);
+    public BMICategory getCategory() {
+        return BMICategory.findByBMIValue(bmi);
     }
 }

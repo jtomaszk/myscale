@@ -1,25 +1,36 @@
 package com.jtomaszk.apps.myscale.services;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import com.google.android.gms.fitness.data.DataPoint;
+import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.result.DataReadResult;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
+import com.jtomaszk.apps.myscale.entity.WeightEntry;
+import com.jtomaszk.apps.myscale.model.HeightUtil;
+import com.jtomaszk.apps.myscale.repository.HeightRepository;
+import com.jtomaszk.apps.myscale.repository.WeightRepository;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p/>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
  */
 public class SynchronizeService extends IntentService {
-    // TODO: Rename actions, choose action names that describe tasks that this
-// IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
-    private static final String ACTION_FOO = ".action.FOO";
-    private static final String ACTION_BAZ = ".action.BAZ";
+    private static final String TAG = "HistoryActivity";
 
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = ".extra.PARAM1";
-    private static final String EXTRA_PARAM2 = ".extra.PARAM2";
+    private static final String ACTION_SYNC_WEIGHT = ".action.ACTION_SYNC_WEIGHT";
+    private static final String ACTION_SYNC_HEIGHT = ".action.ACTION_SYNC_HEIGHT";
+
+    private static final String EXTRA_SYNC_ALL = ".extra.EXTRA_SYNC_ALL";
+
+    private WeightEntryDao dao = new WeightEntryDao();
 
     /**
      * Starts this service to perform action Foo with the given parameters. If
@@ -27,12 +38,10 @@ public class SynchronizeService extends IntentService {
      *
      * @see IntentService
      */
-// TODO: Customize helper method
-    public static void startActionFoo(Context context, String param1, String param2) {
+    public static void startActionSyncWeight(Context context, Boolean syncAll) {
         Intent intent = new Intent(context, com.jtomaszk.apps.myscale.services.SynchronizeService.class);
-        intent.setAction(ACTION_FOO);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
+        intent.setAction(ACTION_SYNC_WEIGHT);
+        intent.putExtra(EXTRA_SYNC_ALL, syncAll);
         context.startService(intent);
     }
 
@@ -42,12 +51,9 @@ public class SynchronizeService extends IntentService {
      *
      * @see IntentService
      */
-// TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
+    public static void startActionSyncHeight(Context context) {
         Intent intent = new Intent(context, com.jtomaszk.apps.myscale.services.SynchronizeService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
+        intent.setAction(ACTION_SYNC_HEIGHT);
         context.startService(intent);
     }
 
@@ -59,14 +65,11 @@ public class SynchronizeService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
+            if (ACTION_SYNC_WEIGHT.equals(action)) {
+                final Boolean syncAll = intent.getBooleanExtra(EXTRA_SYNC_ALL, false);
+                handleActionSyncWeight(syncAll);
+            } else if (ACTION_SYNC_HEIGHT.equals(action)) {
+                handleActionSyncHeight();
             }
         }
     }
@@ -75,17 +78,47 @@ public class SynchronizeService extends IntentService {
      * Handle action Foo in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionFoo(String param1, String param2) {
-        // TODO: Handle action Foo
-        throw new UnsupportedOperationException("Not yet implemented");
+    private void handleActionSyncWeight(boolean syncAll) {
+        Log.i(TAG, "handleActionSyncWeight");
+        WeightRepository weightRepository = new WeightRepository(getBaseContext());
+
+        final List<WeightEntry> notSyncedList = dao.findNotSynced();
+
+        List<WeightEntry> result = weightRepository.insertData(notSyncedList);
+        dao.save(result);
+
+        DataReadResult dataReadResult = weightRepository.readAll();
+
+        for (DataSet ds : dataReadResult.getDataSets()) {
+            for (DataPoint dp : ds.getDataPoints()) {
+                for (Field field : dp.getDataType().getFields()) {
+                    float weight = dp.getValue(field).asFloat();
+                    dao.addIfNotMatchedFromGooleFit(dp.getTimestamp(TimeUnit.MILLISECONDS), dp.hashCode(), weight);
+                }
+            }
+        }
+
+
+//        Toast.makeText(getApplicationContext(), "Weight synced", Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Handle action Baz in the provided background thread with the provided
      * parameters.
      */
-    private void handleActionBaz(String param1, String param2) {
-        // TODO: Handle action Baz
-        throw new UnsupportedOperationException("Not yet implemented");
+    private void handleActionSyncHeight() {
+        int height = HeightUtil.readHeight(getBaseContext());
+        Log.i(TAG, "handleActionSyncHeight " + height);
+
+        HeightRepository heightRepository = new HeightRepository(getBaseContext());
+        DataReadResult dataReadResult = heightRepository.readAll();
+
+        for (DataSet ds : dataReadResult.getDataSets()) {
+            for (DataPoint dp : ds.getDataPoints()) {
+                for (Field field : dp.getDataType().getFields()) {
+                    Log.i(TAG, dp.getTimestamp(TimeUnit.MILLISECONDS) + field.getName() + " " + dp.getValue(field).asFloat());
+                }
+            }
+        }
     }
 }

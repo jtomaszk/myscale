@@ -66,25 +66,25 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
                 findViewById(R.id.add_loading_spinner).setVisibility(View.VISIBLE);
                 Log.i(TAG, "SaveWeightClick");
                 Float value = Float.valueOf(weightText.getText().toString());
-                try {
-                    Date now = dateTimeFormat.parse(dateText.getText().toString() + " " + timeText.getText().toString());
-                    WeightRepository.getInstance(context).insertData(value, now, new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(Status status) {
-                            findViewById(R.id.add_loading_spinner).setVisibility(View.GONE);
-                            // Before querying the data, check to see if the insertion succeeded.
-                            if (!status.isSuccess()) {
-                                Log.i(TAG, "There was a problem inserting the dataset.");
-                                return;
-                            }
+//                try {
+//                    Date now = dateTimeFormat.parse(dateText.getText().toString() + " " + timeText.getText().toString());
+//                    WeightRepository.getInstance(context).insertData(value, now, new ResultCallback<Status>() {
+//                        @Override
+//                        public void onResult(Status status) {
+//                            findViewById(R.id.add_loading_spinner).setVisibility(View.GONE);
+//                             Before querying the data, check to see if the insertion succeeded.
+//                            if (!status.isSuccess()) {
+//                                Log.i(TAG, "There was a problem inserting the dataset.");
+//                                return;
+//                            }
 
                             // At this point, the data has been inserted and can be read.
-                            Log.i(TAG, "Data insert was successful!");
-                        }
-                    });
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+//                            Log.i(TAG, "Data insert was successful!");
+//                        }
+//                    });
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
 
 //                Snackbar.make(view, "Saved!", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
 //                            @Override

@@ -54,8 +54,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".com.jtomaszk.apps.myscale.services.SynchronizeService"
-            android:exported="false"></service>
+            android:name="com.jtomaszk.apps.myscale.services.SynchronizeService"
+            android:exported="false"/>
     </application>
 
 </manifest>

@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * Created by jtomaszk on 27.11.15.
  */
-public enum BmiCategory {
+public enum BMICategory {
     VERY_SEVERELY_UNDERWEIGHT(0, 15),
     SEVERELY_UNDERWEIGHT(15, 16),
     UNDERWEIGHT(16, 18.5f),
@@ -21,17 +21,17 @@ public enum BmiCategory {
     @Getter
     private final float to;
 
-    BmiCategory(float from, float to) {
+    BMICategory(float from, float to) {
         this.from = from;
         this.to = to;
     }
 
-    public static BmiCategory findByBMIValue(float bmi) {
-        for (BmiCategory cat : BmiCategory.values()) {
+    public static BMICategory findByBMIValue(float bmi) {
+        for (BMICategory cat : BMICategory.values()) {
             if (cat.getFrom() < bmi && cat.getTo() > bmi) {
                 return cat;
             }
         }
-        throw new RuntimeException("BMI out of range!");
+        throw new RuntimeException("BMI out of range! " + bmi);
     }
 }

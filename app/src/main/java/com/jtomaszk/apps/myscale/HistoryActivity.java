@@ -48,7 +48,6 @@ public class HistoryActivity extends AppCompatActivity {
         List<String> values = new ArrayList<>(list.size());
         for (WeightEntry entry : list) {
             values.add(convertToViewType(entry));
-            values.add(convertToViewType(entry));
         }
         listView.setAdapter(new ArrayAdapter<>(context, R.layout.simple_list_item_1, values));
     }

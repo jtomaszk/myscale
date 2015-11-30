@@ -20,7 +20,7 @@ public class WeightEntry extends SugarRecord<WeightEntry> {
     @Setter @Getter
     boolean synced;
     @Setter @Getter
-    int hash;
+    Integer hash;
     @Setter @Getter
     DataSource dataSource;
 

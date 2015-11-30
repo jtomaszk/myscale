@@ -20,9 +20,9 @@
     <EditTextPreference
         android:key="pref_height"
         android:inputType="number"
-        android:defaultValue="188"
-        android:summary="summary"
-        android:title="Weight"/>
+        android:defaultValue=""
+        android:summary="User height in cm"
+        android:title="Height"/>
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
