@@ -32,8 +32,7 @@ public abstract class AbstractFitnessApiClient implements GoogleApiClient.Connec
 
     private boolean authInProgress = false;
 
-    private GoogleApiClient mClient;
-
+    protected GoogleApiClient mClient;
     protected Context ctx;
 
     protected AbstractFitnessApiClient(Context ctx, Bundle savedInstanceState) {
@@ -181,7 +180,7 @@ public abstract class AbstractFitnessApiClient implements GoogleApiClient.Connec
 
         return new DataReadRequest.Builder()
                 .read(dataType)
-                .enableServerQueries()
+//                .enableServerQueries()
                         // The data request can specify multiple data types to return, effectively
                         // combining multiple data queries into one call.
                         // In this example, it's very unlikely that the request is for several hundred
@@ -193,6 +192,9 @@ public abstract class AbstractFitnessApiClient implements GoogleApiClient.Connec
                         // bucketing by "sessions", which would need to be defined in code.
                         //                        .bucketByTime(1, TimeUnit.DAYS)
                         //                        .bu
+//                .aggregate(DataType.TYPE_WEIGHT, DataType.AGGREGATE_WEIGHT_SUMMARY)
+//                .aggregate(dataType, DataType.AGGREGATE_WEIGHT_SUMMARY)
+//                .bucketByTime(1, TimeUnit.DAYS)
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
     }

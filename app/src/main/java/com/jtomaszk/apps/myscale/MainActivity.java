@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             bmiText.setText("height=" + height + " last=" + last + " bmi=" + bmi.getBmi() + " cat=" + bmi.getCategory());
         }
 
-//        SynchronizeService.startActionSyncWeight(context, true);
+        SynchronizeService.startActionSyncWeight(context, true);
         SynchronizeService.startActionSyncHeight(context);
     }
 

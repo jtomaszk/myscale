@@ -11,11 +11,13 @@ import java.util.List;
 public class WeightEntryDao {
 
     public List<WeightEntry> getAll() {
-        return WeightEntry.listAll(WeightEntry.class);
+//        return WeightEntry.listAll(WeightEntry.class);
+        return WeightEntry.find(WeightEntry.class,
+                null, null, null, "date_time_milliseconds", null);
     }
 
     public List<WeightEntry> findNotSynced() {
-        return WeightEntry.find(WeightEntry.class, "hash is null");
+        return WeightEntry.find(WeightEntry.class, "synced = 0");
     }
 
     public void save(List<WeightEntry> list) {
@@ -33,8 +35,17 @@ public class WeightEntryDao {
         }
     }
 
+    public WeightEntry findByDateTimeMillisecons(long time) {
+        List<WeightEntry> result = WeightEntry.find(WeightEntry.class, "date_time_milliseconds = ?", String.valueOf(time));
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.get(0);
+        }
+    }
+
     public void addIfNotMatchedFromGooleFit(long time, int hash, float weight) {
-        WeightEntry entry = findByHash(hash);
+        WeightEntry entry = findByDateTimeMillisecons(time);
         if (entry == null) {
             addFromGooleFit(time, hash, weight);
         }
@@ -48,5 +59,17 @@ public class WeightEntryDao {
         entry.setSynced(true);
         entry.setWeight(weight);
         entry.save();
+    }
+
+    public void addFromUser(long time, float weight) {
+        WeightEntry entry = new WeightEntry();
+        entry.setDataSource(DataSource.USER);
+        entry.setDateTimeMilliseconds(time);
+        entry.setWeight(weight);
+        entry.save();
+    }
+
+    public void deleteAll() {
+        WeightEntry.deleteAll(WeightEntry.class);
     }
 }

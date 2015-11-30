@@ -81,6 +81,8 @@ public class SynchronizeService extends IntentService {
     private void handleActionSyncWeight(boolean syncAll) {
         Log.i(TAG, "handleActionSyncWeight");
         WeightRepository weightRepository = new WeightRepository(getBaseContext());
+//        weightRepository.deleteAll();
+//        dao.deleteAll();
 
         final List<WeightEntry> notSyncedList = dao.findNotSynced();
 
@@ -93,13 +95,12 @@ public class SynchronizeService extends IntentService {
             for (DataPoint dp : ds.getDataPoints()) {
                 for (Field field : dp.getDataType().getFields()) {
                     float weight = dp.getValue(field).asFloat();
-                    dao.addIfNotMatchedFromGooleFit(dp.getTimestamp(TimeUnit.MILLISECONDS), dp.hashCode(), weight);
+                    Log.i(TAG,  dp.hashCode() + " " + weight);
+                    dao.addIfNotMatchedFromGooleFit(dp.getTimestamp(TimeUnit.MILLISECONDS),
+                            dp.hashCode(), weight);
                 }
             }
         }
-
-
-//        Toast.makeText(getApplicationContext(), "Weight synced", Toast.LENGTH_SHORT).show();
     }
 
     /**

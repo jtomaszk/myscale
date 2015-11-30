@@ -1,16 +1,15 @@
 package com.jtomaszk.apps.myscale;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.jtomaszk.apps.myscale.repository.WeightRepository;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -23,13 +22,14 @@ import java.util.Date;
 public class AddWeightActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = "AddWeightActivity";
-    public static final String YYYY_MM_DD = "yyyy-mm-dd";
-    public static final String HH_MM = "HH:MM";
+    public static final String YYYY_MM_DD = "yyyy-MM-dd";
+    public static final String HH_MM = "HH:mm";
 
     private Context context;
     private SimpleDateFormat dateFormat = new SimpleDateFormat(YYYY_MM_DD);
     private SimpleDateFormat timeFormat = new SimpleDateFormat(HH_MM);
     private SimpleDateFormat dateTimeFormat = new SimpleDateFormat(YYYY_MM_DD + " " + HH_MM);
+    private WeightEntryDao dao = new WeightEntryDao();
     private TextView dateText;
     private TextView timeText;
     private EditText weightText;
@@ -57,45 +57,26 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
                 showTimePicker();
             }
         });
-//        dateText.setText(new Date().toString());
-//        weightText.setText(String.valueOf(weight));
 
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 findViewById(R.id.add_loading_spinner).setVisibility(View.VISIBLE);
                 Log.i(TAG, "SaveWeightClick");
-                Float value = Float.valueOf(weightText.getText().toString());
-//                try {
-//                    Date now = dateTimeFormat.parse(dateText.getText().toString() + " " + timeText.getText().toString());
-//                    WeightRepository.getInstance(context).insertData(value, now, new ResultCallback<Status>() {
-//                        @Override
-//                        public void onResult(Status status) {
-//                            findViewById(R.id.add_loading_spinner).setVisibility(View.GONE);
-//                             Before querying the data, check to see if the insertion succeeded.
-//                            if (!status.isSuccess()) {
-//                                Log.i(TAG, "There was a problem inserting the dataset.");
-//                                return;
-//                            }
+                Float weight = Float.valueOf(weightText.getText().toString());
 
-                            // At this point, the data has been inserted and can be read.
-//                            Log.i(TAG, "Data insert was successful!");
-//                        }
-//                    });
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    Date date = dateTimeFormat.parse(dateText.getText().toString() + " " + timeText.getText().toString());
+                    dao.addFromUser(date.getTime(), weight);
+                    Log.i(TAG, "Data insert was successful!");
+                    AddWeightActivity.this.finish();
+                } catch (ParseException e) {
+                    Toast.makeText(getApplicationContext(), "Problem with parse date", Toast.LENGTH_SHORT).show();
+                }
 
-//                Snackbar.make(view, "Saved!", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//
-//                            }
-//                        }).show();
+                findViewById(R.id.add_loading_spinner).setVisibility(View.GONE);
             }
         });
-
-
     }
 
     private void showDatePicker() {
@@ -131,10 +112,10 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR, hourOfDay);
+        cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
         cal.set(Calendar.MINUTE, minute);
         cal.set(Calendar.SECOND, second);
 
-        timeText.setText(dateFormat.format(cal.getTime()));
+        timeText.setText(timeFormat.format(cal.getTime()));
     }
 }
