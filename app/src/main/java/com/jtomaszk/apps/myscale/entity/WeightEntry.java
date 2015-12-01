@@ -14,8 +14,8 @@ import lombok.ToString;
 /**
  * Created by jtomaszk on 27.11.15.
  */
-@AllArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor(suppressConstructorProperties = true)
+@RequiredArgsConstructor(suppressConstructorProperties = true)
 @ToString
 public class WeightEntry extends SugarRecord<WeightEntry> {
     @NonNull @Setter @Getter
