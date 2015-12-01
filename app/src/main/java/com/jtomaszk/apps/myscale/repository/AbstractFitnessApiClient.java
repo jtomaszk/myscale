@@ -180,21 +180,7 @@ public abstract class AbstractFitnessApiClient implements GoogleApiClient.Connec
 
         return new DataReadRequest.Builder()
                 .read(dataType)
-//                .enableServerQueries()
-                        // The data request can specify multiple data types to return, effectively
-                        // combining multiple data queries into one call.
-                        // In this example, it's very unlikely that the request is for several hundred
-                        // datapoints each consisting of a few steps and a timestamp.  The more likely
-                        // scenario is wanting to see how many steps were walked per day, for 7 days.
-                        //                        .aggregate(DataType.TYPE_WEIGHT, DataType.AGGREGATE_WEIGHT_SUMMARY)
-                        // Analogous to a "Group By" in SQL, defines how data should be aggregated.
-                        // bucketByTime allows for a time span, whereas bucketBySession would allow
-                        // bucketing by "sessions", which would need to be defined in code.
-                        //                        .bucketByTime(1, TimeUnit.DAYS)
-                        //                        .bu
-//                .aggregate(DataType.TYPE_WEIGHT, DataType.AGGREGATE_WEIGHT_SUMMARY)
-//                .aggregate(dataType, DataType.AGGREGATE_WEIGHT_SUMMARY)
-//                .bucketByTime(1, TimeUnit.DAYS)
+                .enableServerQueries()
                 .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
                 .build();
     }

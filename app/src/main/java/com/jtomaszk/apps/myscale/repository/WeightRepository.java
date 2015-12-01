@@ -15,14 +15,10 @@ import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import lecho.lib.hellocharts.model.PointValue;
 
 /**
  * Created by jarema-user on 2015-11-19.
@@ -30,6 +26,7 @@ import lecho.lib.hellocharts.model.PointValue;
 public class WeightRepository extends AbstractFitnessApiClient {
 
     private static final String TAG = "WeightRepository";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public WeightRepository(Context ctx) {
         super(ctx, null);
@@ -55,8 +52,6 @@ public class WeightRepository extends AbstractFitnessApiClient {
         if (status.isSuccess()) {
             Log.i(TAG, "Successfully deleted today's step count data");
         } else {
-            // The deletion will fail if the requesting app tries to delete data
-            // that it did not insert.
             Log.i(TAG, "Failed to delete today's step count data");
         }
     }
@@ -68,12 +63,6 @@ public class WeightRepository extends AbstractFitnessApiClient {
         long endTime = cal.getTimeInMillis();
         cal.add(Calendar.MONTH, -1);
         long startTime = cal.getTimeInMillis();
-
-        final List<PointValue> values = new ArrayList<>();
-
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Log.i(TAG, "Range Start: " + dateFormat.format(startTime));
-        Log.i(TAG, "Range End: " + dateFormat.format(endTime));
 
         DataReadRequest readRequest = getSimpleDataReadRequest(endTime, startTime, DataType.TYPE_WEIGHT);
         return read(readRequest);
@@ -98,7 +87,6 @@ public class WeightRepository extends AbstractFitnessApiClient {
             DataPoint dataPoint = dataSet.createDataPoint()
                     .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS);
             dataPoint.getValue(Field.FIELD_WEIGHT).setFloat(weightEntry.getWeight());
-            weightEntry.setHash(dataPoint.hashCode());
             dataSet.add(dataPoint);
         }
 
@@ -110,10 +98,6 @@ public class WeightRepository extends AbstractFitnessApiClient {
         if (status != null && status.isSuccess()) {
             for (WeightEntry weightEntry : list) {
                 weightEntry.setSynced(true);
-            }
-        } else {
-            for (WeightEntry weightEntry : list) {
-                weightEntry.setHash(null);
             }
         }
         return list;

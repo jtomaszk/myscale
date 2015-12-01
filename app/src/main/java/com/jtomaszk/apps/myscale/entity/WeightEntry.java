@@ -4,40 +4,33 @@ import com.orm.SugarRecord;
 
 import java.util.concurrent.TimeUnit;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Created by jtomaszk on 27.11.15.
  */
+@AllArgsConstructor
+@RequiredArgsConstructor
+@ToString
 public class WeightEntry extends SugarRecord<WeightEntry> {
-    @Setter @Getter
-    float weight;
-    @Getter
-    long days;
-    @Getter
-    long dateTimeMilliseconds;
+    @NonNull @Setter @Getter
+    Float weight;
+    @NonNull @Getter @Setter
+    Long dateTimeMilliseconds;
+    @NonNull @Setter @Getter
+    DataSource dataSource;
     @Setter @Getter
     boolean synced;
     @Setter @Getter
-    Integer hash;
-    @Setter @Getter
-    DataSource dataSource;
+    String appName;
 
-    public void setDateTimeMilliseconds(long dateTimeMilliseconds) {
-        this.dateTimeMilliseconds = dateTimeMilliseconds;
-        this.days = TimeUnit.MILLISECONDS.toDays(dateTimeMilliseconds);
+    public long getDays() {
+        return TimeUnit.MILLISECONDS.toDays(dateTimeMilliseconds);
     }
 
-    @Override
-    public String toString() {
-        return "WeightEntry{" +
-                "weight=" + weight +
-                ", days=" + days +
-                ", dateTimeMilliseconds=" + dateTimeMilliseconds +
-                ", synced=" + synced +
-                ", hash=" + hash +
-                ", dataSource=" + dataSource +
-                '}';
-    }
 }

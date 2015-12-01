@@ -56,6 +56,6 @@ public class HistoryActivity extends AppCompatActivity {
     private String convertToViewType(WeightEntry entry) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(new Date(entry.getDateTimeMilliseconds())) + " " + entry.getWeight()
-                + " h=" + entry.getHash() + " " + entry.getDataSource();
+                + " " + entry.getDataSource();
     }
 }
