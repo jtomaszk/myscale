@@ -1,5 +1,6 @@
 package com.jtomaszk.apps.myscale.dao;
 
+import com.jtomaszk.apps.myscale.AppConst;
 import com.jtomaszk.apps.myscale.entity.DataSource;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
@@ -32,25 +33,25 @@ public class WeightEntryDao {
         }
     }
 
-    public void addIfNotMatchedFromGooleFit(long time, float weight) {
+    public void addIfNotMatchedFromGooleFit(long time, float weight, String appName) {
         WeightEntry entry = findByDateTimeMillisecons(time);
         if (entry == null) {
-            addFromGooleFit(time, weight);
+            addFromGooleFit(time, weight, appName);
         }
     }
 
-    public void addFromGooleFit(long time, float weight) {
-        WeightEntry entry = new WeightEntry(weight, time, DataSource.GOOGLE_FIT, true, "");
+    public void addFromGooleFit(long time, float weight, String appName) {
+        WeightEntry entry = new WeightEntry(weight, time, DataSource.GOOGLE_FIT, true, appName);
         entry.save();
     }
 
     public void addFromUser(long time, float weight) {
-        WeightEntry entry = new WeightEntry(weight, time, DataSource.USER);
+        WeightEntry entry = new WeightEntry(weight, time, DataSource.USER, AppConst.APP_PACKAGE.getValue());
         entry.save();
     }
 
     public void addFromImport(long time, float weight) {
-        WeightEntry entry = new WeightEntry(weight, time, DataSource.IMPORT);
+        WeightEntry entry = new WeightEntry(weight, time, DataSource.IMPORT, AppConst.APP_PACKAGE.getValue());
         entry.save();
     }
 

@@ -26,7 +26,7 @@ public class WeightEntry extends SugarRecord<WeightEntry> {
     DataSource dataSource;
     @Setter @Getter
     boolean synced;
-    @Setter @Getter
+    @NonNull @Setter @Getter
     String appName;
 
     public long getDays() {

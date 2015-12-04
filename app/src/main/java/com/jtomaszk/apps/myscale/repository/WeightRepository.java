@@ -13,6 +13,7 @@ import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataDeleteRequest;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
+import com.jtomaszk.apps.myscale.AppConst;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
 import java.util.Calendar;
@@ -71,7 +72,7 @@ public class WeightRepository extends AbstractFitnessApiClient {
     public List<WeightEntry> insertData(List<WeightEntry> list) {
         // Create a data source
         DataSource dataSource = new DataSource.Builder()
-                .setAppPackageName("com.jtomaszk.apps.myscale")
+                .setAppPackageName(AppConst.APP_PACKAGE.getValue())
                 .setDataType(DataType.TYPE_WEIGHT)
                 .setName("MyScale - weight")
                 .setType(DataSource.TYPE_RAW)

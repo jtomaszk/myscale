@@ -97,7 +97,7 @@ public class SynchronizeService extends IntentService {
                     float weight = dp.getValue(field).asFloat();
                     Log.i(TAG,  dp.hashCode() + " " + weight);
                     dao.addIfNotMatchedFromGooleFit(dp.getTimestamp(TimeUnit.MILLISECONDS),
-                            weight);
+                            weight, dp.getDataSource().getAppPackageName());
                 }
             }
         }
