@@ -58,12 +58,8 @@ public class WeightRepository extends AbstractFitnessApiClient {
     }
 
     public DataReadResult readAll() {
-        Calendar cal = Calendar.getInstance();
-        Date now = new Date();
-        cal.setTime(now);
-        long endTime = cal.getTimeInMillis();
-        cal.add(Calendar.MONTH, -1);
-        long startTime = cal.getTimeInMillis();
+        long endTime = getCurrentTimeInMillis();
+        long startTime = getTimeInMillisAddInterval(Calendar.YEAR, -5);
 
         DataReadRequest readRequest = getSimpleDataReadRequest(endTime, startTime, DataType.TYPE_WEIGHT);
         return read(readRequest);

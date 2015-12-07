@@ -2,12 +2,18 @@ package com.jtomaszk.apps.myscale.repository;
 
 import android.content.Context;
 
+import com.google.android.gms.fitness.data.DataPoint;
+import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
+import com.jtomaszk.apps.myscale.AppConst;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jarema-user on 2015-11-19.
@@ -20,14 +26,30 @@ public class HeightRepository extends AbstractFitnessApiClient {
     }
 
     public DataReadResult readAll() {
-        Calendar cal = Calendar.getInstance();
-        Date now = new Date();
-        cal.setTime(now);
-        long endTime = cal.getTimeInMillis();
-        cal.add(Calendar.YEAR, -10);
-        long startTime = cal.getTimeInMillis();
+        long endTime = getCurrentTimeInMillis();
+        long startTime = getTimeInMillisAddInterval(Calendar.YEAR, -5);
 
         DataReadRequest readRequest = getSimpleDataReadRequest(endTime, startTime, DataType.TYPE_HEIGHT);
         return read(readRequest);
+    }
+
+    public void insert(float height) {
+        // Create a data source
+        DataSource dataSource = new DataSource.Builder()
+                .setAppPackageName(AppConst.APP_PACKAGE.getValue())
+                .setDataType(DataType.TYPE_HEIGHT)
+                .setName("MyScale - height")
+                .setType(DataSource.TYPE_RAW)
+                .build();
+        DataSet dataSet = DataSet.create(dataSource);
+
+        long startTime = getCurrentTimeInMillis();
+
+        DataPoint dataPoint = dataSet.createDataPoint()
+                .setTimeInterval(startTime, startTime, TimeUnit.MILLISECONDS);
+        dataPoint.getValue(Field.FIELD_HEIGHT).setFloat(height);
+        dataSet.add(dataPoint);
+
+        insertData(dataSet);
     }
 }

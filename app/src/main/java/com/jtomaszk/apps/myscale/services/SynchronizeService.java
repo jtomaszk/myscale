@@ -114,12 +114,29 @@ public class SynchronizeService extends IntentService {
         HeightRepository heightRepository = new HeightRepository(getBaseContext());
         DataReadResult dataReadResult = heightRepository.readAll();
 
+        float heightVal = 0;
+        long maxTime = 0;
+        boolean foundEntry = false;
+
         for (DataSet ds : dataReadResult.getDataSets()) {
             for (DataPoint dp : ds.getDataPoints()) {
                 for (Field field : dp.getDataType().getFields()) {
                     Log.i(TAG, dp.getTimestamp(TimeUnit.MILLISECONDS) + field.getName() + " " + dp.getValue(field).asFloat());
+
+                    long time = dp.getTimestamp(TimeUnit.MILLISECONDS);
+                    if (time > maxTime) {
+                        maxTime = time;
+                        heightVal = dp.getValue(field).asFloat();
+                        foundEntry = true;
+                    }
                 }
             }
+        }
+
+        if (foundEntry && ((height / 100.0) - heightVal) < 0.01) {
+            HeightUtil.writeHeight(Math.round(heightVal * 100), maxTime, getBaseContext());
+        } else {
+            heightRepository.insert((float) (height / 100.0));
         }
     }
 }

@@ -1,0 +1,1 @@
+alter table WEIGHT_ENTRY add APP_NAME TEXT;

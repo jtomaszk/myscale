@@ -7,6 +7,7 @@ import lombok.Getter;
  */
 public enum MyScalePrefs {
     HEIGHT("pref_height"),
+    HEIGHT_DATE("pref_height_date"),
     LAST_WEIGHT_SYNC("last_weight_sync");
 
     @Getter

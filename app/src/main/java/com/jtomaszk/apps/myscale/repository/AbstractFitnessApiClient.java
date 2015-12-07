@@ -18,6 +18,8 @@ import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -207,6 +209,21 @@ public abstract class AbstractFitnessApiClient implements GoogleApiClient.Connec
         if (mClient.isConnected()) {
             mClient.disconnect();
         }
+    }
+
+    protected long getTimeInMillisAddInterval(int field, int value) {
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        cal.add(field, value);
+        return cal.getTimeInMillis();
+    }
+
+    protected long getCurrentTimeInMillis() {
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        return cal.getTimeInMillis();
     }
 
 }

@@ -33,4 +33,5 @@ public class WeightEntry extends SugarRecord<WeightEntry> {
         return TimeUnit.MILLISECONDS.toDays(dateTimeMilliseconds);
     }
 
+    public WeightEntry() { }
 }
