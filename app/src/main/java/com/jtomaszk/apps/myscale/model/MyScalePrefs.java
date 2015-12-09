@@ -1,11 +1,15 @@
 package com.jtomaszk.apps.myscale.model;
 
+import com.jtomaszk.apps.common.ApplicationPref;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Created by jtomaszk on 30.11.15.
  */
-public enum MyScalePrefs {
+@AllArgsConstructor(suppressConstructorProperties = true)
+public enum MyScalePrefs implements ApplicationPref {
     HEIGHT("pref_height"),
     HEIGHT_DATE("pref_height_date"),
     LAST_WEIGHT_SYNC("last_weight_sync");
@@ -13,7 +17,4 @@ public enum MyScalePrefs {
     @Getter
     private String prefName;
 
-    MyScalePrefs(String prefName) {
-        this.prefName = prefName;
-    }
 }

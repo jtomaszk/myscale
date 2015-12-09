@@ -2,6 +2,8 @@ package com.jtomaszk.apps.myscale.model;
 
 import android.content.Context;
 
+import com.jtomaszk.apps.common.PreferenceUtil;
+
 /**
  * Created by jtomaszk on 30.11.15.
  */
@@ -12,15 +14,15 @@ public class HeightUtil {
     }
 
     public static void writeHeight(Integer height, Long timeInMillis, Context context) {
-        writeHeightDate(timeInMillis, context);
+        writeHeightTime(timeInMillis, context);
         PreferenceUtil.writeInt(MyScalePrefs.HEIGHT, height, context);
     }
 
-    private static void readHeightDate(Long defaultValue, Context context) {
-        PreferenceUtil.readDateInMillis(MyScalePrefs.HEIGHT_DATE, defaultValue, context);
+    public static long readHeightTime(Context context) {
+        return PreferenceUtil.readTimeInMillis(MyScalePrefs.HEIGHT_DATE, 0L, context);
     }
 
-    private static void writeHeightDate(Long timeInMillis, Context context) {
-        PreferenceUtil.writeDateInMillis(MyScalePrefs.HEIGHT_DATE, timeInMillis, context);
+    private static void writeHeightTime(Long timeInMillis, Context context) {
+        PreferenceUtil.writeTimeInMillis(MyScalePrefs.HEIGHT_DATE, timeInMillis, context);
     }
 }

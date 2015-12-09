@@ -109,13 +109,15 @@ public class SynchronizeService extends IntentService {
      */
     private void handleActionSyncHeight() {
         int height = HeightUtil.readHeight(getBaseContext());
+        long heightTime = HeightUtil.readHeightTime(getBaseContext());
+
         Log.i(TAG, "handleActionSyncHeight " + height);
 
         HeightRepository heightRepository = new HeightRepository(getBaseContext());
         DataReadResult dataReadResult = heightRepository.readAll();
 
-        float heightVal = 0;
-        long maxTime = 0;
+        float lastHeightValue = 0;
+        long lastHeightTime = 0;
         boolean foundEntry = false;
 
         for (DataSet ds : dataReadResult.getDataSets()) {
@@ -124,17 +126,17 @@ public class SynchronizeService extends IntentService {
                     Log.i(TAG, dp.getTimestamp(TimeUnit.MILLISECONDS) + field.getName() + " " + dp.getValue(field).asFloat());
 
                     long time = dp.getTimestamp(TimeUnit.MILLISECONDS);
-                    if (time > maxTime) {
-                        maxTime = time;
-                        heightVal = dp.getValue(field).asFloat();
+                    if (time > lastHeightTime) {
+                        lastHeightTime = time;
+                        lastHeightValue = dp.getValue(field).asFloat();
                         foundEntry = true;
                     }
                 }
             }
         }
 
-        if (foundEntry && ((height / 100.0) - heightVal) < 0.01) {
-            HeightUtil.writeHeight(Math.round(heightVal * 100), maxTime, getBaseContext());
+        if (foundEntry && ((height / 100.0) - lastHeightValue) < 0.01) {
+            HeightUtil.writeHeight(Math.round(lastHeightValue * 100), lastHeightTime, getBaseContext());
         } else {
             heightRepository.insert((float) (height / 100.0));
         }
