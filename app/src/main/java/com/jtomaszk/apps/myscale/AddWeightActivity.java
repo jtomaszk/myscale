@@ -66,7 +66,7 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.buttonAddWeight).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 findViewById(R.id.add_loading_spinner).setVisibility(View.VISIBLE);

@@ -12,66 +12,64 @@
     tools:showIn="@layout/activity_main">
 
     <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        android:baselineAligned="false"
-        android:id="@+id/radioGroup"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="false"
         android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
-        android:gravity="center">
+        android:layout_marginTop="42dp"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/radioButtonGroupBy"
-            android:id="@+id/textView" />
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/months"
             android:id="@+id/radioButtonMonth"
-            android:enabled="true" />
-
-        <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/weeks"
+            android:enabled="true"
+            android:text="@string/months" />
+
+        <RadioButton
             android:id="@+id/radioButtonWeek"
-            android:enabled="true" />
-
-        <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/days"
+            android:enabled="true"
+            android:text="@string/weeks" />
+
+        <RadioButton
             android:id="@+id/radioButtonDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:checked="true"
-            android:enabled="true" />
+            android:enabled="true"
+            android:text="@string/days" />
     </RadioGroup>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/chart_main"
+    <lecho.lib.hellocharts.view.LineChartView
+        android:id="@+id/chart2"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bmiView"
         android:layout_alignParentTop="false"
-        android:layout_height="0dp"
-        android:layout_below="@+id/radioGroup"
-        android:layout_above="@+id/bmiView" />
-
+        android:layout_below="@+id/radioGroup" />
 
     <TextView
         android:id="@+id/bmiView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/bmiText"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/bmiText"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

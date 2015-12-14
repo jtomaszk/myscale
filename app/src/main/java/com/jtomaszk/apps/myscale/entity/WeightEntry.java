@@ -2,6 +2,9 @@ package com.jtomaszk.apps.myscale.entity;
 
 import com.orm.SugarRecord;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import lombok.AllArgsConstructor;
@@ -31,6 +34,10 @@ public class WeightEntry extends SugarRecord<WeightEntry> {
 
     public long getDays() {
         return TimeUnit.MILLISECONDS.toDays(dateTimeMilliseconds);
+    }
+
+    public String getDaysPrint() {
+        return new SimpleDateFormat("DD/MM").format(new Date(dateTimeMilliseconds));
     }
 
     public WeightEntry() { }

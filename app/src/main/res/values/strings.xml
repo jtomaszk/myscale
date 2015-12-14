@@ -151,7 +151,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_history">Detail data</string>
-    <string name="bmiText">Last weight: %{weight} \n BMI: %{bmi} \n On date: %{date}</string>
+    <string name="bmiText">Last weight: %%{weight} \n BMI: %%{bmi} \n On date: %%{date}</string>
     <string name="radioButtonGroupBy">GroupBy:</string>
     <string name="months">Months</string>
     <string name="weeks">Weeks</string>
