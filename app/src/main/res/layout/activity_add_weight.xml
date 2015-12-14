@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:gravity="center"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".AddWeightActivity">
@@ -38,17 +39,34 @@
     </LinearLayout>
 
 
-    <TextView
+    <!--<TextView-->
+        <!--android:id="@+id/editTextWeight"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/dateTimePickerLayout"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:text="XX.X kg"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="30sp"-->
+        <!--android:ems="10" />-->
+
+    <NumberPicker
         android:id="@+id/editTextWeight"
+        android:layout_below="@+id/dateTimePickerLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dateTimePickerLayout"
-        android:layout_centerInParent="true"
-        android:text="XX.X kg"
-        android:gravity="center"
-        android:textSize="30sp"
-        android:ems="10" />
+        android:gravity="center" />
+        <!--android:layout_centerInParent="true"-->
 
+    <ProgressBar
+        android:id="@+id/add_loading_spinner"
+        style="?android:progressBarStyleLarge"
+        android:layout_below="@+id/editTextWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/buttonAddWeight"
@@ -59,14 +77,6 @@
         android:layout_centerVertical="true"
         android:text="@string/insertWeight" />
 
-    <ProgressBar
-        android:id="@+id/add_loading_spinner"
-        style="?android:progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:visibility="invisible" />
+
 
 </RelativeLayout>

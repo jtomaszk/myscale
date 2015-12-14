@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,7 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
     private WeightEntryDao dao = new WeightEntryDao();
     private TextView dateText;
     private TextView timeText;
-    private EditText weightText;
+    private NumberPicker weightText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
         setContentView(R.layout.activity_add_weight);
         dateText = (TextView) findViewById(R.id.editTextDate);
         timeText = (TextView) findViewById(R.id.editTextTime);
-        weightText = (EditText) findViewById(R.id.editTextWeight);
+        weightText = (NumberPicker) findViewById(R.id.editTextWeight);
 
         dateText.setText(dateFormat.format(new Date()));
         dateText.setOnClickListener(new View.OnClickListener() {
@@ -58,12 +59,19 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
             }
         });
 
+        weightText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNumberPicker();
+            }
+        });
+
         findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 findViewById(R.id.add_loading_spinner).setVisibility(View.VISIBLE);
                 Log.i(TAG, "SaveWeightClick");
-                Float weight = Float.valueOf(weightText.getText().toString());
+                Float weight = null; //Float.valueOf(weightText.getText().toString());
 
                 try {
                     Date date = dateTimeFormat.parse(dateText.getText().toString() + " " + timeText.getText().toString());
@@ -77,6 +85,10 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
                 findViewById(R.id.add_loading_spinner).setVisibility(View.GONE);
             }
         });
+    }
+
+    private void showNumberPicker() {
+//        NumberDi np = NumberPicker.
     }
 
     private void showDatePicker() {
