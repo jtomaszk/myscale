@@ -38,24 +38,26 @@
     </LinearLayout>
 
 
-    <EditText
+    <TextView
         android:id="@+id/editTextWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dateTimePickerLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="51dp"
-        android:ems="10"
-        android:inputType="numberDecimal" />
+        android:layout_centerInParent="true"
+        android:text="XX.X kg"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:ems="10" />
+
 
     <Button
         android:id="@+id/buttonAddWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextWeight"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="48dp"
-        android:text="Save" />
+        android:text="@string/insertWeight" />
 
     <ProgressBar
         android:id="@+id/add_loading_spinner"

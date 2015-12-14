@@ -156,4 +156,5 @@
     <string name="months">Months</string>
     <string name="weeks">Weeks</string>
     <string name="days">Days</string>
+    <string name="insertWeight">Save</string>
 </resources>

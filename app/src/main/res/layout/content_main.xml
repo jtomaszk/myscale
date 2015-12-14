@@ -52,7 +52,6 @@
             android:id="@+id/radioButtonDay"
             android:checked="true"
             android:enabled="true" />
-
     </RadioGroup>
 
     <include
@@ -70,10 +69,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/bmiText"
-        android:textAlignment="center"
+        android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center" />
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>
