@@ -12,8 +12,8 @@ import com.google.android.gms.fitness.result.DataReadResult;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.utils.HeightUtil;
-import com.jtomaszk.apps.myscale.repository.HeightRepository;
-import com.jtomaszk.apps.myscale.repository.WeightRepository;
+import com.jtomaszk.apps.myscale.gapi.HeightRepository;
+import com.jtomaszk.apps.myscale.gapi.WeightRepository;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

@@ -2,8 +2,6 @@ package com.jtomaszk.apps.myscale.entity;
 
 import com.orm.SugarRecord;
 
-import java.util.Comparator;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import static com.jtomaszk.apps.common.DateUtil.millisecondsToDays;
-import static com.jtomaszk.apps.common.DateUtil.millisecondsToShortString;
+import static com.jtomaszk.apps.common.utils.DateUtil.millisecondsToDays;
+import static com.jtomaszk.apps.common.utils.DateUtil.millisecondsToShortString;
 
 /**
  * Created by jtomaszk on 27.11.15.
@@ -42,10 +40,4 @@ public class WeightEntry extends SugarRecord<WeightEntry> {
         return millisecondsToShortString(dateTimeMilliseconds);
     }
 
-    public static final Comparator<WeightEntry> WEIGHT_ENTRY_COMPARATOR = new Comparator<WeightEntry>() {
-        @Override
-        public int compare(WeightEntry lhs, WeightEntry rhs) {
-            return lhs.getDateTimeMilliseconds().compareTo(rhs.getDateTimeMilliseconds());
-        }
-    };
 }

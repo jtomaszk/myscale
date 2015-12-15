@@ -1,6 +1,6 @@
 package com.jtomaszk.apps.myscale.chart;
 
-import com.jtomaszk.apps.common.DateUtil;
+import com.jtomaszk.apps.common.utils.DateUtil;
 
 import lecho.lib.hellocharts.formatter.AxisValueFormatter;
 import lecho.lib.hellocharts.formatter.ValueFormatterHelper;

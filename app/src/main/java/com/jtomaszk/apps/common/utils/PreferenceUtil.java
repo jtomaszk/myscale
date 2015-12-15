@@ -1,8 +1,10 @@
-package com.jtomaszk.apps.common;
+package com.jtomaszk.apps.common.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import com.jtomaszk.apps.common.ApplicationPref;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

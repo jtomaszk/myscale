@@ -3,6 +3,7 @@ package com.jtomaszk.apps.myscale.dao;
 import com.jtomaszk.apps.myscale.preferences.AppConst;
 import com.jtomaszk.apps.myscale.entity.DataSource;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
+import com.jtomaszk.apps.myscale.utils.WeightUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +17,7 @@ public class WeightEntryDao {
         List<WeightEntry> ret = WeightEntry.find(WeightEntry.class,
                 null, null, null, "date_time_milliseconds", null);
 
-        Collections.sort(ret, WeightEntry.WEIGHT_ENTRY_COMPARATOR);
+        Collections.sort(ret, WeightUtil.WEIGHT_ENTRY_COMPARATOR);
         return ret;
     }
 

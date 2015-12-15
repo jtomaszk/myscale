@@ -2,7 +2,7 @@ package com.jtomaszk.apps.myscale.utils;
 
 import android.content.Context;
 
-import com.jtomaszk.apps.common.PreferenceUtil;
+import com.jtomaszk.apps.common.utils.PreferenceUtil;
 import com.jtomaszk.apps.myscale.preferences.MyScalePrefs;
 
 /**

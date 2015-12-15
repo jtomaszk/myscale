@@ -1,6 +1,7 @@
 package com.jtomaszk.apps.common
 
 import android.test.mock.MockContext
+import com.jtomaszk.apps.common.utils.PreferenceUtil
 import spock.lang.Specification
 
 /**

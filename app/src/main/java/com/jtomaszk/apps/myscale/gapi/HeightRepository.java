@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.myscale.repository;
+package com.jtomaszk.apps.myscale.gapi;
 
 import android.content.Context;
 
@@ -9,7 +9,7 @@ import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
-import com.jtomaszk.apps.common.AbstractFitnessApiClient;
+import com.jtomaszk.apps.common.gapi.AbstractFitnessApiClient;
 import com.jtomaszk.apps.myscale.preferences.AppConst;
 
 import java.util.Calendar;

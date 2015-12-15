@@ -14,7 +14,8 @@ import android.widget.TextView;
 
 import com.google.common.collect.Iterables;
 import com.jtomaszk.apps.myscale.R;
-import com.jtomaszk.apps.myscale.chart.DataChartBuilder;
+import com.jtomaszk.apps.common.chart.DataChartBuilder;
+import com.jtomaszk.apps.myscale.chart.DateAxisFormatter;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.model.BMI;
@@ -27,6 +28,8 @@ import java.util.List;
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.view.LineChartView;
+
+import static com.jtomaszk.apps.myscale.utils.WeightUtil.simpleTransform;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
         last = Iterables.getLast(list).getWeight();
 
         DataChartBuilder dataChart = new DataChartBuilder()
-                .addLine(list)
-                .addAxisX()
+                .addLine(simpleTransform(list))
+                .addAxisX(new DateAxisFormatter())
                 .addAxisY();
 
 

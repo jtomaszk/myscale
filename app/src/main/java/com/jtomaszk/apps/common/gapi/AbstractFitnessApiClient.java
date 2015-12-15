@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.common;
+package com.jtomaszk.apps.common.gapi;
 
 import android.app.Activity;
 import android.content.Context;
