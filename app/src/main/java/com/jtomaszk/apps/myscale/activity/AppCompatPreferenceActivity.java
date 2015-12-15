@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.myscale;
+package com.jtomaszk.apps.myscale.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

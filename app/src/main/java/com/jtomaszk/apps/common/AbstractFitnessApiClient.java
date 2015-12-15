@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.myscale.repository;
+package com.jtomaszk.apps.common;
 
 import android.app.Activity;
 import android.content.Context;

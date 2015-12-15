@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Created by jtomaszk on 07.12.15.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PreferenceUtil {
 
     public static int readInt(ApplicationPref pref, Integer defaultValue, Context context) {

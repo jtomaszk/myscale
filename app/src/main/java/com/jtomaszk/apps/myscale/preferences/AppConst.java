@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.myscale;
+package com.jtomaszk.apps.myscale.preferences;
 
 import lombok.Getter;
 

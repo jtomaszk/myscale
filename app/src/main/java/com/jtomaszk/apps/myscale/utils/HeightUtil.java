@@ -1,8 +1,9 @@
-package com.jtomaszk.apps.myscale.model;
+package com.jtomaszk.apps.myscale.utils;
 
 import android.content.Context;
 
 import com.jtomaszk.apps.common.PreferenceUtil;
+import com.jtomaszk.apps.myscale.preferences.MyScalePrefs;
 
 /**
  * Created by jtomaszk on 30.11.15.

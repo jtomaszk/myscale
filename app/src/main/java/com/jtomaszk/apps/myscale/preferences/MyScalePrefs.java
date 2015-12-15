@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.myscale.model;
+package com.jtomaszk.apps.myscale.preferences;
 
 import com.jtomaszk.apps.common.ApplicationPref;
 

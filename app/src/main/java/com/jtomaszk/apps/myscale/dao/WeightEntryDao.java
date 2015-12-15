@@ -1,9 +1,10 @@
 package com.jtomaszk.apps.myscale.dao;
 
-import com.jtomaszk.apps.myscale.AppConst;
+import com.jtomaszk.apps.myscale.preferences.AppConst;
 import com.jtomaszk.apps.myscale.entity.DataSource;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,9 +12,12 @@ import java.util.List;
  */
 public class WeightEntryDao {
 
-    public List<WeightEntry> getAll() {
-        return WeightEntry.find(WeightEntry.class,
+    public List<WeightEntry> getAllSorted() {
+        List<WeightEntry> ret = WeightEntry.find(WeightEntry.class,
                 null, null, null, "date_time_milliseconds", null);
+
+        Collections.sort(ret, WeightEntry.WEIGHT_ENTRY_COMPARATOR);
+        return ret;
     }
 
     public List<WeightEntry> findNotSynced() {

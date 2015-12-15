@@ -1,20 +1,15 @@
-package com.jtomaszk.apps.myscale;
+package com.jtomaszk.apps.myscale.activity;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.android.gms.fitness.data.DataPoint;
-import com.google.android.gms.fitness.data.Field;
+import com.jtomaszk.apps.myscale.R;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
@@ -23,9 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import lecho.lib.hellocharts.model.PointValue;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -41,7 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
         context = this;
 
         WeightEntryDao dao = new WeightEntryDao();
-        List<WeightEntry> list = dao.getAll();
+        List<WeightEntry> list = dao.getAllSorted();
 
         ListView listView = (ListView) findViewById(R.id.listView);
         Log.d(TAG, Arrays.toString(list.toArray()));

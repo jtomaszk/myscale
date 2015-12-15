@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.myscale;
+package com.jtomaszk.apps.myscale.activity;
 
 
 import android.annotation.TargetApi;
@@ -19,6 +19,8 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
+import com.jtomaszk.apps.myscale.R;
 
 import java.util.List;
 

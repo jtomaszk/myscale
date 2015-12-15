@@ -2,21 +2,23 @@ package com.jtomaszk.apps.myscale.entity;
 
 import com.orm.SugarRecord;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.Comparator;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import static com.jtomaszk.apps.common.DateUtil.millisecondsToDays;
+import static com.jtomaszk.apps.common.DateUtil.millisecondsToShortString;
+
 /**
  * Created by jtomaszk on 27.11.15.
  */
+@NoArgsConstructor
 @AllArgsConstructor(suppressConstructorProperties = true)
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 @ToString
@@ -33,12 +35,17 @@ public class WeightEntry extends SugarRecord<WeightEntry> {
     String appName;
 
     public long getDays() {
-        return TimeUnit.MILLISECONDS.toDays(dateTimeMilliseconds);
+        return millisecondsToDays(dateTimeMilliseconds);
     }
 
     public String getDaysPrint() {
-        return new SimpleDateFormat("DD/MM").format(new Date(dateTimeMilliseconds));
+        return millisecondsToShortString(dateTimeMilliseconds);
     }
 
-    public WeightEntry() { }
+    public static final Comparator<WeightEntry> WEIGHT_ENTRY_COMPARATOR = new Comparator<WeightEntry>() {
+        @Override
+        public int compare(WeightEntry lhs, WeightEntry rhs) {
+            return lhs.getDateTimeMilliseconds().compareTo(rhs.getDateTimeMilliseconds());
+        }
+    };
 }

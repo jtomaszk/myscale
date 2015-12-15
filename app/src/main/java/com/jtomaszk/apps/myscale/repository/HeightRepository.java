@@ -9,10 +9,10 @@ import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
-import com.jtomaszk.apps.myscale.AppConst;
+import com.jtomaszk.apps.common.AbstractFitnessApiClient;
+import com.jtomaszk.apps.myscale.preferences.AppConst;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**

@@ -1,15 +1,15 @@
-package com.jtomaszk.apps.myscale;
+package com.jtomaszk.apps.myscale.activity;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jtomaszk.apps.myscale.R;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
