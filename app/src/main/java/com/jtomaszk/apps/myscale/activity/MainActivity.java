@@ -3,6 +3,7 @@ package com.jtomaszk.apps.myscale.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,10 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.jtomaszk.apps.common.chart.ChartPoint;
 import com.jtomaszk.apps.myscale.R;
 import com.jtomaszk.apps.common.chart.DataChartBuilder;
-import com.jtomaszk.apps.myscale.chart.DateAxisFormatter;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.model.BMI;
@@ -29,6 +31,9 @@ import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.view.LineChartView;
 
+import static com.jtomaszk.apps.myscale.chart.AxisFormatters.dateFormatter;
+import static com.jtomaszk.apps.common.chart.ChartPointGroupAccesors.avg;
+import static com.jtomaszk.apps.myscale.chart.ValueAggregators.weekAggregator;
 import static com.jtomaszk.apps.myscale.utils.WeightUtil.simpleTransform;
 
 public class MainActivity extends AppCompatActivity {
@@ -79,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
         last = Iterables.getLast(list).getWeight();
 
         DataChartBuilder dataChart = new DataChartBuilder()
-                .addLine(simpleTransform(list))
-                .addAxisX(new DateAxisFormatter())
+                .addLineGroupBy(simpleTransform(list), weekAggregator(), avg())
+                .addAxisX(dateFormatter())
                 .addAxisY();
 
 

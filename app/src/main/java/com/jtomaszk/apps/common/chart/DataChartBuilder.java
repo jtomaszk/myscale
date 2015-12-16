@@ -1,10 +1,16 @@
 package com.jtomaszk.apps.common.chart;
 
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.util.List;
+import java.util.Map;
 
 import lecho.lib.hellocharts.formatter.AxisValueFormatter;
 import lecho.lib.hellocharts.model.Axis;
@@ -23,15 +29,60 @@ public class DataChartBuilder {
     public DataChartBuilder() {
     }
 
+    public DataChartBuilder addLineGroupBy(List<ChartPoint> list,
+                                           Function<ChartPoint, Float> groupFunction,
+                                           Function<ChartPointGroup, Float> valueFunction) {
+
+        Map<Float, ChartPointGroup> groupMap = groupListBy(list, groupFunction);
+
+        List<PointValue> values = Lists.newArrayListWithCapacity(groupMap.values().size());
+
+        for (ChartPointGroup i : groupMap.values()) {
+            Float x = i.getGroupValue();
+            Float y = valueFunction.apply(i);
+            values.add(createPoint(x, y));
+        }
+
+        lines.add(createLine(values));
+        return this;
+    }
+
+    @NonNull
+    private Map<Float, ChartPointGroup> groupListBy(List<ChartPoint> list, Function<ChartPoint, Float> groupFunction) {
+        Map<Float, ChartPointGroup> groupMap = Maps.newLinkedHashMap();
+
+        for (ChartPoint cp : list) {
+            Float groupValue = groupFunction.apply(cp);
+            Preconditions.checkNotNull(groupValue);
+            if (!groupMap.containsKey(groupValue)) {
+                groupMap.put(groupValue, new ChartPointGroup(groupValue));
+            }
+            groupMap.get(groupValue).addPoint(cp);
+        }
+        return groupMap;
+    }
+
+    @NonNull
+    private PointValue createPoint(Float x, Float y) {
+        Preconditions.checkNotNull(x);
+        Preconditions.checkNotNull(y);
+        return new PointValue(x, y);
+    }
+
+    private Line createLine(List<PointValue> values) {
+        return new Line(values).setColor(Color.BLUE).setCubic(true).setHasPoints(true);
+    }
+
     public DataChartBuilder addLine(List<ChartPoint> list) {
         List<PointValue> values = Lists.newArrayList();
 
         for (ChartPoint entry : list) {
-            values.add(new PointValue(entry.getX(), entry.getY()));
+            float x = entry.getX();
+            float y = entry.getY();
+            values.add(createPoint(x, y));
         }
 
-        Line line = new Line(values).setColor(Color.BLUE).setCubic(true).setHasPoints(true);
-        lines.add(line);
+        lines.add(createLine(values));
         return this;
     }
 
