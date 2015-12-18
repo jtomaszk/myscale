@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.google.common.base.Function;
@@ -33,6 +34,8 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 import static com.jtomaszk.apps.myscale.chart.AxisFormatters.dateFormatter;
 import static com.jtomaszk.apps.common.chart.ChartPointGroupAccesors.avg;
+import static com.jtomaszk.apps.myscale.chart.ValueAggregators.dayAggregator;
+import static com.jtomaszk.apps.myscale.chart.ValueAggregators.monthAggregator;
 import static com.jtomaszk.apps.myscale.chart.ValueAggregators.weekAggregator;
 import static com.jtomaszk.apps.myscale.utils.WeightUtil.simpleTransform;
 
@@ -46,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private Context context;
+    private List<WeightEntry> list;
+    private LineChartView chart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +60,55 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addWeightClick();
-            }
-        });
+        fab.setOnClickListener(addWeightClick());
 
+        RadioButton radioButtonMonth = (RadioButton) findViewById(R.id.radioButtonMonth);
+        radioButtonMonth.setOnClickListener(addRadioButtonMonthClick());
+        RadioButton radioButtonWeek = (RadioButton) findViewById(R.id.radioButtonWeek);
+        radioButtonWeek.setOnClickListener(addRadioButtonWeekClick());
+        RadioButton radioButtonDay = (RadioButton) findViewById(R.id.radioButtonDay);
+        radioButtonDay.setOnClickListener(addRadioButtonDayClick());
+        
         context = this;
 //        AbstractFitnessApiClient.getInstance(context, savedInstanceState);
     }
 
-    private void addWeightClick() {
-        Intent intent = new Intent(this, AddWeightActivity.class);
-        startActivity(intent);
+    private View.OnClickListener addRadioButtonDayClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadChartData(dayAggregator());
+            }
+        };
+    }
+
+    private View.OnClickListener addRadioButtonWeekClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadChartData(weekAggregator());
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener addRadioButtonMonthClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reloadChartData(monthAggregator());
+            }
+        };
+    }
+
+    private View.OnClickListener addWeightClick() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, AddWeightActivity.class);
+                startActivity(intent);
+            }
+        };
     }
 
 
@@ -80,20 +120,15 @@ public class MainActivity extends AppCompatActivity {
 //        WeightEntry.deleteAll(WeightEntry.class);
 
         WeightEntryDao dao = new WeightEntryDao();
-        List<WeightEntry> list = dao.getAllSorted();
+        list = dao.getAllSorted();
         last = Iterables.getLast(list).getWeight();
 
-        DataChartBuilder dataChart = new DataChartBuilder()
-                .addLineGroupBy(simpleTransform(list), weekAggregator(), avg())
-                .addAxisX(dateFormatter())
-                .addAxisY();
-
-
-        LineChartView chart = (LineChartView) findViewById(R.id.chart2);
-        chart.setLineChartData(dataChart.getData());
+        chart = (LineChartView) findViewById(R.id.chart2);
         chart.setInteractive(true);
         chart.setZoomType(ZoomType.HORIZONTAL);
         chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
+
+        reloadChartData(dayAggregator());
 
         findViewById(R.id.loading_spinner).setVisibility(View.GONE);
 
@@ -108,6 +143,18 @@ public class MainActivity extends AppCompatActivity {
 
         SynchronizeService.startActionSyncWeight(context, true);
         SynchronizeService.startActionSyncHeight(context);
+    }
+
+    private void reloadChartData(Function<ChartPoint, Float> groupFunction) {
+        DataChartBuilder dataChart = getDataChartBuilderForGroup(groupFunction);
+        chart.setLineChartData(dataChart.getData());
+    }
+
+    private DataChartBuilder getDataChartBuilderForGroup(Function<ChartPoint, Float> groupFunction) {
+        return new DataChartBuilder()
+                    .addLineGroupBy(simpleTransform(list), groupFunction, avg())
+                    .addAxisX(dateFormatter())
+                    .addAxisY();
     }
 
     @Override

@@ -17,7 +17,7 @@ public class ChartPointGroup {
 
     @Getter
     @NonNull
-    private float groupValue;
+    private Float groupValue;
     @Getter
     private float min = Float.MAX_VALUE;
     @Getter
