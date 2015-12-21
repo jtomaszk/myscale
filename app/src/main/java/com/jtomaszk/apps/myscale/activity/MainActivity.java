@@ -17,26 +17,29 @@ import android.widget.TextView;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.jtomaszk.apps.common.chart.ChartPoint;
-import com.jtomaszk.apps.myscale.R;
 import com.jtomaszk.apps.common.chart.DataChartBuilder;
+import com.jtomaszk.apps.myscale.R;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.model.BMI;
 import com.jtomaszk.apps.myscale.model.BMIModel;
-import com.jtomaszk.apps.myscale.utils.HeightUtil;
 import com.jtomaszk.apps.myscale.services.SynchronizeService;
+import com.jtomaszk.apps.myscale.utils.HeightUtil;
 
 import java.util.List;
 
+import lecho.lib.hellocharts.formatter.AxisValueFormatter;
 import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.view.LineChartView;
 
-import static com.jtomaszk.apps.myscale.chart.AxisFormatters.dateFormatter;
 import static com.jtomaszk.apps.common.chart.ChartPointGroupAccesors.avg;
-import static com.jtomaszk.apps.myscale.chart.ValueAggregators.dayAggregator;
-import static com.jtomaszk.apps.myscale.chart.ValueAggregators.monthAggregator;
-import static com.jtomaszk.apps.myscale.chart.ValueAggregators.weekAggregator;
+import static com.jtomaszk.apps.myscale.chart.aggregator.ValueAggregator.dayAggregator;
+import static com.jtomaszk.apps.myscale.chart.aggregator.ValueAggregator.monthAggregator;
+import static com.jtomaszk.apps.myscale.chart.aggregator.ValueAggregator.weekAggregator;
+import static com.jtomaszk.apps.myscale.chart.axis.AxisFormatters.dayFormatter;
+import static com.jtomaszk.apps.myscale.chart.axis.AxisFormatters.monthFormatter;
+import static com.jtomaszk.apps.myscale.chart.axis.AxisFormatters.weekFormatter;
 import static com.jtomaszk.apps.myscale.utils.WeightUtil.simpleTransform;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reloadChartData(dayAggregator());
+                reloadChartData(dayAggregator(), dayFormatter());
             }
         };
     }
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reloadChartData(weekAggregator());
+                reloadChartData(weekAggregator(), weekFormatter());
             }
         };
     }
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reloadChartData(monthAggregator());
+                reloadChartData(monthAggregator(), monthFormatter());
             }
         };
     }
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, AddWeightActivity.class);
+                intent.putExtra("last", last);
                 startActivity(intent);
             }
         };
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         chart.setZoomType(ZoomType.HORIZONTAL);
         chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
 
-        reloadChartData(dayAggregator());
+        reloadChartData(dayAggregator(), dayFormatter());
 
         findViewById(R.id.loading_spinner).setVisibility(View.GONE);
 
@@ -145,15 +149,17 @@ public class MainActivity extends AppCompatActivity {
         SynchronizeService.startActionSyncHeight(context);
     }
 
-    private void reloadChartData(Function<ChartPoint, Float> groupFunction) {
-        DataChartBuilder dataChart = getDataChartBuilderForGroup(groupFunction);
+    private void reloadChartData(Function<ChartPoint, Float> groupFunction,
+                                 AxisValueFormatter formatter) {
+        DataChartBuilder dataChart = getDataChartBuilderForGroup(groupFunction, formatter);
         chart.setLineChartData(dataChart.getData());
     }
 
-    private DataChartBuilder getDataChartBuilderForGroup(Function<ChartPoint, Float> groupFunction) {
+    private DataChartBuilder getDataChartBuilderForGroup(Function<ChartPoint, Float> groupFunction,
+                                                         AxisValueFormatter formatter) {
         return new DataChartBuilder()
                     .addLineGroupBy(simpleTransform(list), groupFunction, avg())
-                    .addAxisX(dateFormatter())
+                    .addAxisX(formatter)
                     .addAxisY();
     }
 

@@ -14,8 +14,8 @@ import com.google.android.gms.fitness.request.DataDeleteRequest;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 import com.jtomaszk.apps.common.gapi.AbstractFitnessApiClient;
-import com.jtomaszk.apps.myscale.preferences.AppConst;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
+import com.jtomaszk.apps.myscale.preferences.AppConst;
 
 import java.util.Calendar;
 import java.util.Date;

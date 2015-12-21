@@ -2,6 +2,7 @@ package com.jtomaszk.apps.common.utils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +38,22 @@ public final class DateUtil {
 
     public static Date daysToDate(long days) {
         return new Date(daysToMilliseconds(days));
+    }
+
+    public static Calendar daysToCalendar(long days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(daysToMilliseconds(days));
+        return cal;
+    }
+
+    public static int daysToWeek(long days) {
+        Calendar cal = daysToCalendar(days);
+        return cal.get(Calendar.WEEK_OF_YEAR);
+    }
+
+    public static int daysToMonth(long days) {
+        Calendar cal = daysToCalendar(days);
+        return cal.get(Calendar.MONTH) + 1;
     }
 
     public static String millisecondsToShortString(long dateTimeMilliseconds) {

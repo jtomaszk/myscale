@@ -1,6 +1,6 @@
 package com.jtomaszk.apps.myscale.preferences;
 
-import com.jtomaszk.apps.common.ApplicationPref;
+import com.jtomaszk.apps.common.prefs.ApplicationPref;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

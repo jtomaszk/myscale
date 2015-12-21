@@ -1,4 +1,4 @@
-package com.jtomaszk.apps.common;
+package com.jtomaszk.apps.common.prefs;
 
 /**
  * Created by jarema-user on 2015-12-09.

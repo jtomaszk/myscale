@@ -2,7 +2,6 @@ package com.jtomaszk.apps.common.chart;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;

@@ -15,6 +15,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,6 +44,23 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
         dateText = (TextView) findViewById(R.id.editTextDate);
         timeText = (TextView) findViewById(R.id.editTextTime);
         weightText = (NumberPicker) findViewById(R.id.editTextWeight);
+
+        final DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+
+        weightText.setFormatter(new NumberPicker.Formatter() {
+            @Override
+            public String format(int value) {
+                return String.valueOf(value / 10)
+                        + decimalFormatSymbols.getDecimalSeparator()
+                        + String.valueOf(value % 10);
+            }
+        });
+        weightText.setMinValue(100);
+        weightText.setMaxValue(2000);
+
+        Bundle bundle = getIntent().getExtras();
+        float last = bundle.getFloat("last");
+        weightText.setValue((int) (last * 10));
 
         dateText.setText(dateFormat.format(new Date()));
         dateText.setOnClickListener(new View.OnClickListener() {
