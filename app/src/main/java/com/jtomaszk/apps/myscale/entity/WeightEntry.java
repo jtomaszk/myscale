@@ -10,9 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import static com.jtomaszk.apps.common.utils.DateUtil.millisecondsToDays;
-import static com.jtomaszk.apps.common.utils.DateUtil.millisecondsToShortString;
-
 /**
  * Created by jtomaszk on 27.11.15.
  */
@@ -31,13 +28,5 @@ public class WeightEntry extends SugarRecord<WeightEntry> {
     boolean synced;
     @NonNull @Setter @Getter
     String appName;
-
-    public long getDays() {
-        return millisecondsToDays(dateTimeMilliseconds);
-    }
-
-    public String getDaysPrint() {
-        return millisecondsToShortString(dateTimeMilliseconds);
-    }
 
 }

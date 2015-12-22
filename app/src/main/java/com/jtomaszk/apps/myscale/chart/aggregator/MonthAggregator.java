@@ -12,6 +12,6 @@ public class MonthAggregator implements Function<ChartPoint, Float> {
     @Override
     public Float apply(ChartPoint input) {
         long val = Float.valueOf(input.getX()).longValue();
-        return Long.valueOf(DateUtil.daysToMonth(val)).floatValue();
+        return DateUtil.truncateMillisecondsToMonth(val).floatValue();
     }
 }

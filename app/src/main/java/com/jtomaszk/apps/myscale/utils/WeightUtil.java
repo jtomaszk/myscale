@@ -21,7 +21,7 @@ public final class WeightUtil {
     public static final Function<WeightEntry, ChartPoint> CHART_POINT_CONVERTER = new Function<WeightEntry, ChartPoint>() {
         @Override
         public ChartPoint apply(WeightEntry input) {
-            return new ChartPoint(input.getDays(), input.getWeight());
+            return new ChartPoint(input.getDateTimeMilliseconds(), input.getWeight());
         }
     };
     public static final Comparator<WeightEntry> WEIGHT_ENTRY_COMPARATOR = new Comparator<WeightEntry>() {

@@ -24,10 +24,6 @@ public final class DateUtil {
         return getShortLocalDateInstanceWithoutYears().format(date);
     }
 
-    public static long millisecondsToDays(long dateTimeMilliseconds) {
-        return TimeUnit.MILLISECONDS.toDays(dateTimeMilliseconds);
-    }
-
     public static Date millisecondsToDate(long dateTimeMilliseconds) {
         return new Date(dateTimeMilliseconds);
     }
@@ -40,19 +36,19 @@ public final class DateUtil {
         return new Date(daysToMilliseconds(days));
     }
 
-    public static Calendar daysToCalendar(long days) {
+    public static Calendar millisecondsToCalendar(long milliseconds) {
         Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(daysToMilliseconds(days));
+        cal.setTimeInMillis(milliseconds);
         return cal;
     }
 
-    public static int daysToWeek(long days) {
-        Calendar cal = daysToCalendar(days);
+    public static int millisecondsToWeek(long days) {
+        Calendar cal = millisecondsToCalendar(days);
         return cal.get(Calendar.WEEK_OF_YEAR);
     }
 
-    public static int daysToMonth(long days) {
-        Calendar cal = daysToCalendar(days);
+    public static int millisecondsToMonth(long days) {
+        Calendar cal = millisecondsToCalendar(days);
         return cal.get(Calendar.MONTH) + 1;
     }
 
@@ -61,13 +57,8 @@ public final class DateUtil {
         return dateToString(date);
     }
 
-    public static String daysToShortString(long days) {
-        Date date = daysToDate(days);
-        return dateToString(date);
-    }
-
-    public static String daysToShortStringWithoutYears(long days) {
-        Date date = daysToDate(days);
+    public static String millisecondsToShortStringWithoutYears(long days) {
+        Date date = millisecondsToDate(days);
         return dateToStringWithoutYears(date);
     }
 
@@ -79,5 +70,34 @@ public final class DateUtil {
 
     private static DateFormat getShortLocalDateInstance() {
         return DateFormat.getDateInstance(DateFormat.SHORT);
+    }
+
+    public static Long truncateMillisecondsToMonth(long milliseconds) {
+        Calendar cal = millisecondsToCalendar(milliseconds);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
+    }
+
+    public static Long truncateMillisecondsToWeek(long milliseconds) {
+        Calendar cal = millisecondsToCalendar(milliseconds);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
+    }
+
+    public static Long truncateMillisecondsToDay(long milliseconds) {
+        Calendar cal = millisecondsToCalendar(milliseconds);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTimeInMillis();
     }
 }

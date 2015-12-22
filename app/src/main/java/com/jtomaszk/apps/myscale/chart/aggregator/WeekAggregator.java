@@ -12,6 +12,6 @@ public class WeekAggregator implements Function<ChartPoint, Float> {
     @Override
     public Float apply(ChartPoint input) {
         long val = Float.valueOf(input.getX()).longValue();
-        return Long.valueOf(DateUtil.daysToWeek(val)).floatValue();
+        return DateUtil.truncateMillisecondsToWeek(val).floatValue();
     }
 }
