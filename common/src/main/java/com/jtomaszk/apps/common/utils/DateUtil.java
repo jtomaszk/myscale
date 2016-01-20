@@ -100,4 +100,16 @@ public final class DateUtil {
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTimeInMillis();
     }
+
+    public static DateFormat getDateInstance() {
+        return DateFormat.getDateInstance();
+    }
+
+    public static DateFormat getTimeInstance() {
+        return DateFormat.getTimeInstance();
+    }
+
+    public static DateFormat getDateTimeInstance() {
+        return DateFormat.getDateTimeInstance();
+    }
 }

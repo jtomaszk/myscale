@@ -3,38 +3,46 @@ package com.jtomaszk.apps.myscale.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jtomaszk.apps.common.utils.DateUtil;
 import com.jtomaszk.apps.myscale.R;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.lang.reflect.Field;
+import java.text.DateFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import pl.wavesoftware.eid.exceptions.Eid;
+import pl.wavesoftware.eid.exceptions.EidRuntimeException;
 
 public class AddWeightActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     private static final String TAG = "AddWeightActivity";
-    public static final String YYYY_MM_DD = "yyyy-MM-dd";
-    public static final String HH_MM = "HH:mm";
 
     private Context context;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat(YYYY_MM_DD);
-    private SimpleDateFormat timeFormat = new SimpleDateFormat(HH_MM);
-    private SimpleDateFormat dateTimeFormat = new SimpleDateFormat(YYYY_MM_DD + " " + HH_MM);
+    private DateFormat dateFormat = DateUtil.getDateInstance();
+
+    private DateFormat timeFormat = DateUtil.getTimeInstance();
+
+    private DateFormat dateTimeFormat = DateUtil.getDateTimeInstance();
+
     private WeightEntryDao dao = new WeightEntryDao();
     private TextView dateText;
     private TextView timeText;
-    private NumberPicker weightText;
+    private NumberPicker weightPicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,24 +51,17 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
         setContentView(R.layout.activity_add_weight);
         dateText = (TextView) findViewById(R.id.editTextDate);
         timeText = (TextView) findViewById(R.id.editTextTime);
-        weightText = (NumberPicker) findViewById(R.id.editTextWeight);
+        weightPicker = (NumberPicker) findViewById(R.id.editTextWeight);
 
-        final DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-
-        weightText.setFormatter(new NumberPicker.Formatter() {
-            @Override
-            public String format(int value) {
-                return String.valueOf(value / 10)
-                        + decimalFormatSymbols.getDecimalSeparator()
-                        + String.valueOf(value % 10);
-            }
-        });
-        weightText.setMinValue(100);
-        weightText.setMaxValue(2000);
+        weightPicker.setFormatter(new WeightFormatter());
+        weightPicker.setMinValue(100);
+        weightPicker.setMaxValue(2000);
 
         Bundle bundle = getIntent().getExtras();
         float last = bundle.getFloat("last");
-        weightText.setValue((int) (last * 10));
+        weightPicker.setValue((int) (last * 10));
+
+        firstRenderingFix();
 
         dateText.setText(dateFormat.format(new Date()));
         dateText.setOnClickListener(new View.OnClickListener() {
@@ -77,19 +78,12 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
             }
         });
 
-        weightText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showNumberPicker();
-            }
-        });
-
         findViewById(R.id.buttonAddWeight).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 findViewById(R.id.add_loading_spinner).setVisibility(View.VISIBLE);
                 Log.i(TAG, "SaveWeightClick");
-                Float weight = null; //Float.valueOf(weightText.getText().toString());
+                Float weight = (float) weightPicker.getValue() / 10.0F;
 
                 try {
                     Date date = dateTimeFormat.parse(dateText.getText().toString() + " " + timeText.getText().toString());
@@ -105,8 +99,17 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
         });
     }
 
-    private void showNumberPicker() {
-//        NumberDi np = NumberPicker.
+    private void firstRenderingFix() {
+        try {
+            Field f = NumberPicker.class.getDeclaredField("mInputText");
+            f.setAccessible(true);
+            EditText inputText = (EditText) f.get(weightPicker);
+            inputText.setFilters(new InputFilter[0]);
+        } catch (NoSuchFieldException e) {
+            Log.e(TAG, new Eid("20160120:233036").toString(), e);
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, new Eid("20160120:233052").toString(), e);
+        }
     }
 
     private void showDatePicker() {
@@ -147,5 +150,16 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
         cal.set(Calendar.SECOND, second);
 
         timeText.setText(timeFormat.format(cal.getTime()));
+    }
+
+    private static class WeightFormatter implements NumberPicker.Formatter {
+        private final DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+
+        @Override
+        public String format(int value) {
+            return String.valueOf(value / 10)
+                    + decimalFormatSymbols.getDecimalSeparator()
+                    + String.valueOf(value % 10);
+        }
     }
 }
