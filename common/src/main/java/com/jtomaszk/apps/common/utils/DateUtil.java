@@ -15,6 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DateUtil {
 
+    public static String dateToString(Date date, String format) {
+        return new SimpleDateFormat(format).format(date);
+    }
+
     public static String dateToString(Date date) {
         return getShortLocalDateInstance().format(date);
     }
@@ -55,6 +59,11 @@ public final class DateUtil {
     public static String millisecondsToShortString(long dateTimeMilliseconds) {
         Date date = millisecondsToDate(dateTimeMilliseconds);
         return dateToString(date);
+    }
+
+    public static String millisecondsToString(long dateTimeMilliseconds, String format) {
+        Date date = millisecondsToDate(dateTimeMilliseconds);
+        return dateToString(date, format);
     }
 
     public static String millisecondsToShortStringWithoutYears(long days) {
