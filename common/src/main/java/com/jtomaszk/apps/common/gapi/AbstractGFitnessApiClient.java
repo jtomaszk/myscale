@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by jarema-user on 2015-11-19.
  */
-public abstract class AbstractFitnessApiClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public abstract class AbstractGFitnessApiClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "FitnessApiClient";
     public static final int REQUEST_OAUTH = 1000;
@@ -37,7 +37,7 @@ public abstract class AbstractFitnessApiClient implements GoogleApiClient.Connec
     protected GoogleApiClient mClient;
     protected Context ctx;
 
-    protected AbstractFitnessApiClient(Context ctx, Bundle savedInstanceState) {
+    protected AbstractGFitnessApiClient(Context ctx, Bundle savedInstanceState) {
         this.ctx = ctx;
         if (savedInstanceState != null) {
             authInProgress = savedInstanceState.getBoolean(AUTH_PENDING);

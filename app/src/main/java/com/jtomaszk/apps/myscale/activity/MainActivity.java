@@ -19,6 +19,7 @@ import com.google.common.collect.Iterables;
 import com.jtomaszk.apps.common.chart.ChartPoint;
 import com.jtomaszk.apps.common.chart.DataChartBuilder;
 import com.jtomaszk.apps.myscale.R;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.model.BMI;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         radioButtonDay.setOnClickListener(addRadioButtonDayClick());
         
         context = this;
-//        AbstractFitnessApiClient.getInstance(context, savedInstanceState);
+//        AbstractGFitnessApiClient.getInstance(context, savedInstanceState);
     }
 
     private View.OnClickListener addRadioButtonDayClick() {
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 //        WeightEntry.deleteAll(WeightEntry.class);
 
-        WeightEntryDao dao = new WeightEntryDao();
+        WeightEntryDao dao = new WeightEntryDaoImpl();
         list = dao.getAllSorted();
         last = Iterables.getLast(list).getWeight();
 
@@ -166,21 +167,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-//        AbstractFitnessApiClient.getInstance(context).onStop();
+//        AbstractGFitnessApiClient.getInstance(context).onStop();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i(TAG, "onActivityResult " + requestCode + " " + resultCode + " " + data);
-//        if (requestCode == AbstractFitnessApiClient.REQUEST_OAUTH) {
-//            AbstractFitnessApiClient.getInstance(context).onActivityResult(resultCode);
+//        if (requestCode == AbstractGFitnessApiClient.REQUEST_OAUTH) {
+//            AbstractGFitnessApiClient.getInstance(context).onActivityResult(resultCode);
 //        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        AbstractFitnessApiClient.getInstance(context).onSaveInstanceState(outState);
+//        AbstractGFitnessApiClient.getInstance(context).onSaveInstanceState(outState);
     }
 
     @Override

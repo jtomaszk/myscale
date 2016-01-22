@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'groovyx.grooid.groovy-android'
 
 android {
 
@@ -42,6 +43,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 task listJars << {
@@ -62,4 +66,8 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.9.5'
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.3'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'cglib:cglib-nodep:3.1'
+    testCompile 'org.objenesis:objenesis:2.2'
 }

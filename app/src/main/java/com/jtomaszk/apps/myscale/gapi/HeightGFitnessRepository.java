@@ -9,7 +9,7 @@ import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
-import com.jtomaszk.apps.common.gapi.AbstractFitnessApiClient;
+import com.jtomaszk.apps.common.gapi.AbstractGFitnessApiClient;
 import com.jtomaszk.apps.myscale.preferences.AppConst;
 
 import java.util.Calendar;
@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by jarema-user on 2015-11-19.
  */
-public class HeightRepository extends AbstractFitnessApiClient {
-    private static final String TAG = "HeightRepository";
+public class HeightGFitnessRepository extends AbstractGFitnessApiClient {
+    private static final String TAG = "HeightGFitnessRepository";
 
-    public HeightRepository(Context ctx) {
+    public HeightGFitnessRepository(Context ctx) {
         super(ctx, null);
     }
 

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.jtomaszk.apps.common.utils.DateUtil;
 import com.jtomaszk.apps.myscale.R;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -26,7 +27,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import pl.wavesoftware.eid.exceptions.Eid;
-import pl.wavesoftware.eid.exceptions.EidRuntimeException;
 
 public class AddWeightActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -39,7 +39,7 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
 
     private DateFormat dateTimeFormat = DateUtil.getDateTimeInstance();
 
-    private WeightEntryDao dao = new WeightEntryDao();
+    private WeightEntryDao dao = new WeightEntryDaoImpl();
     private TextView dateText;
     private TextView timeText;
     private NumberPicker weightPicker;
@@ -49,34 +49,9 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
         super.onCreate(savedInstanceState);
         context = this;
         setContentView(R.layout.activity_add_weight);
-        dateText = (TextView) findViewById(R.id.editTextDate);
-        timeText = (TextView) findViewById(R.id.editTextTime);
-        weightPicker = (NumberPicker) findViewById(R.id.editTextWeight);
 
-        weightPicker.setFormatter(new WeightFormatter());
-        weightPicker.setMinValue(100);
-        weightPicker.setMaxValue(2000);
-
-        Bundle bundle = getIntent().getExtras();
-        float last = bundle.getFloat("last");
-        weightPicker.setValue((int) (last * 10));
-
-        firstRenderingFix();
-
-        dateText.setText(dateFormat.format(new Date()));
-        dateText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePicker();
-            }
-        });
-        timeText.setText(timeFormat.format(new Date()));
-        timeText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTimePicker();
-            }
-        });
+        setupWeightPicker();
+        setupDateTimePicker();
 
         findViewById(R.id.buttonAddWeight).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,6 +72,35 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
                 findViewById(R.id.add_loading_spinner).setVisibility(View.GONE);
             }
         });
+    }
+
+    private void setupDateTimePicker() {
+        Date actualDate = new Date();
+        String initialDate = dateFormat.format(actualDate);
+        dateText = setupDatePicker(R.id.editTextDate, initialDate, new DatePickerOnClickListener());
+        String initialTime = timeFormat.format(actualDate);
+        timeText = setupDatePicker(R.id.editTextTime, initialTime, new TimePickerOnClickListener());
+    }
+
+    private TextView setupDatePicker(int viewId, String text, View.OnClickListener onClickListener) {
+        TextView textView = (TextView) findViewById(viewId);
+        textView.setText(text);
+        textView.setOnClickListener(onClickListener);
+        return textView;
+    }
+
+    private void setupWeightPicker() {
+        weightPicker = (NumberPicker) findViewById(R.id.editTextWeight);
+
+        weightPicker.setFormatter(new WeightFormatter());
+        weightPicker.setMinValue(100);
+        weightPicker.setMaxValue(2000);
+
+        Bundle bundle = getIntent().getExtras();
+        float last = bundle.getFloat("last");
+        weightPicker.setValue((int) (last * 10));
+
+        firstRenderingFix();
     }
 
     private void firstRenderingFix() {
@@ -160,6 +164,20 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
             return String.valueOf(value / 10)
                     + decimalFormatSymbols.getDecimalSeparator()
                     + String.valueOf(value % 10);
+        }
+    }
+
+    private class DatePickerOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showDatePicker();
+        }
+    }
+
+    private class TimePickerOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            showTimePicker();
         }
     }
 }

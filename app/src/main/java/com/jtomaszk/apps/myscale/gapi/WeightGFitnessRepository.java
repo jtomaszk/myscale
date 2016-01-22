@@ -13,7 +13,7 @@ import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataDeleteRequest;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
-import com.jtomaszk.apps.common.gapi.AbstractFitnessApiClient;
+import com.jtomaszk.apps.common.gapi.AbstractGFitnessApiClient;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.preferences.AppConst;
 
@@ -25,12 +25,12 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by jarema-user on 2015-11-19.
  */
-public class WeightRepository extends AbstractFitnessApiClient {
+public class WeightGFitnessRepository extends AbstractGFitnessApiClient {
 
-    private static final String TAG = "WeightRepository";
+    private static final String TAG = "WeightGFitnessRepository";
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    public WeightRepository(Context ctx) {
+    public WeightGFitnessRepository(Context ctx) {
         super(ctx, null);
     }
 

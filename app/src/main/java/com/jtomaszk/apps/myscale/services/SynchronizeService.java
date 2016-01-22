@@ -9,14 +9,17 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.result.DataReadResult;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
-import com.jtomaszk.apps.myscale.gapi.HeightRepository;
-import com.jtomaszk.apps.myscale.gapi.WeightRepository;
+import com.jtomaszk.apps.myscale.gapi.HeightGFitnessRepository;
+import com.jtomaszk.apps.myscale.gapi.WeightGFitnessRepository;
 import com.jtomaszk.apps.myscale.utils.HeightUtil;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import lombok.Setter;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -30,7 +33,8 @@ public class SynchronizeService extends IntentService {
 
     private static final String EXTRA_SYNC_ALL = ".extra.EXTRA_SYNC_ALL";
 
-    private WeightEntryDao dao = new WeightEntryDao();
+    @Setter
+    private WeightEntryDao dao = new WeightEntryDaoImpl();
 
     /**
      * Starts this service to perform action Foo with the given parameters. If
@@ -80,7 +84,7 @@ public class SynchronizeService extends IntentService {
      */
     private void handleActionSyncWeight(boolean syncAll) {
         Log.i(TAG, "handleActionSyncWeight");
-        WeightRepository weightRepository = new WeightRepository(getBaseContext());
+        WeightGFitnessRepository weightRepository = new WeightGFitnessRepository(getBaseContext());
 //        weightRepository.deleteAll();
 //        dao.deleteAll();
 
@@ -113,7 +117,7 @@ public class SynchronizeService extends IntentService {
 
         Log.i(TAG, "handleActionSyncHeight " + height);
 
-        HeightRepository heightRepository = new HeightRepository(getBaseContext());
+        HeightGFitnessRepository heightRepository = new HeightGFitnessRepository(getBaseContext());
         DataReadResult dataReadResult = heightRepository.readAll();
 
         float lastHeightValue = 0;

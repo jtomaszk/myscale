@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.jtomaszk.apps.myscale.R;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
@@ -32,7 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         context = this;
 
-        WeightEntryDao dao = new WeightEntryDao();
+        WeightEntryDao dao = new WeightEntryDaoImpl();
         List<WeightEntry> list = dao.getAllSorted();
 
         ListView listView = (ListView) findViewById(R.id.listView);
