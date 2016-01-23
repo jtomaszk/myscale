@@ -1,11 +1,8 @@
 package com.jtomaszk.apps.myscale.importer;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 
 import com.google.common.collect.Lists;
-import com.joestelmach.natty.DateGroup;
-import com.joestelmach.natty.Parser;
 import com.jtomaszk.apps.myscale.entity.DataSource;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.preferences.AppConst;
@@ -24,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidRuntimeException;
 
 /**
@@ -32,7 +28,12 @@ import pl.wavesoftware.eid.exceptions.EidRuntimeException;
  */
 public class Importer {
 
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'HH:'HH:mm");
+    private static final String YYYY_MM_DD = "yyyyMMdd";
+    private static final String YYYY_MM_DD_HHMM = "yyyyMMddHHmm";
+    private static final String YYYY_MM_DD_HHMMSS = "yyyyMMddHHmmss";
+    private SimpleDateFormat formatShort = new SimpleDateFormat(YYYY_MM_DD);
+    private SimpleDateFormat format = new SimpleDateFormat(YYYY_MM_DD_HHMM);
+    private SimpleDateFormat formatLong = new SimpleDateFormat(YYYY_MM_DD_HHMMSS);
     private NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 
     @NonNull
@@ -66,13 +67,18 @@ public class Importer {
     }
 
     private Date parseDate(String date) {
-        Parser parser = new Parser();
-        List<DateGroup> groups = parser.parse(date);
-        for (DateGroup group : groups) {
-            return group.getDates().get(0);
+        String simple = date.replaceAll("[A-Za-z].*", "").replaceAll("[^\\d]", "");
+        try {
+            if (simple.length() == YYYY_MM_DD.length()) {
+                return formatShort.parse(simple);
+            } else if (simple.length() == YYYY_MM_DD_HHMM.length()) {
+                return format.parse(simple);
+            } else {
+                return formatLong.parse(simple);
+            }
+        } catch (ParseException e) {
+            throw new EidRuntimeException("20160121:115317", date, e);
         }
-
-        throw new EidRuntimeException(new Eid("20160121:115317"), "Could not parse date: %s", date);
     }
 
     @NonNull
