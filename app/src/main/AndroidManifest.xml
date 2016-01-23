@@ -11,7 +11,7 @@
 
     <!-- android:icon="@mipmap/ic_launcher" -->
     <application
-        android:name="com.orm.SugarApp"
+        android:name="com.jtomaszk.apps.myscale.application.MyScaleApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -60,7 +60,14 @@
 
         <activity
             android:name=".activity.ImportActivity"
-            android:label="@string/title_activity_import"></activity>
+            android:label="@string/title_activity_import"/>
+
+            <!--android:theme="@style/Theme.Dialog"-->
+        <activity android:name="org.acra.CrashReportDialog"
+            android:process=":error_report"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="true" />
     </application>
 
 </manifest>
