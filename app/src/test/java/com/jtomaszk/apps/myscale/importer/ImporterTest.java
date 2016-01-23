@@ -3,7 +3,6 @@ package com.jtomaszk.apps.myscale.importer;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
 import com.jtomaszk.apps.common.utils.DateUtil;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
@@ -11,7 +10,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.InputStreamReader;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +31,10 @@ public class ImporterTest {
     @Test
     public void parseFile() throws Exception {
         //given
-        String csvData = CharStreams.toString(
-                new InputStreamReader(this.getClass().getResourceAsStream("input.csv"), "UTF-8"));
+        File file = new File(this.getClass().getResource("input.csv").getFile());
 
         //when
-        List<WeightEntry> list = importer.parseCsvData(csvData);
+        List<WeightEntry> list = importer.parseCsvData(file);
 
         //then
         Assert.assertEquals(12, list.size());

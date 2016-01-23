@@ -145,9 +145,6 @@ public class MainActivity extends AppCompatActivity {
         if (last > 10) {
             bmiText.setText("height=" + height + " last=" + last + " bmi=" + bmi.getBmi() + " cat=" + bmi.getCategory());
         }
-
-        SynchronizeService.startActionSyncWeight(context, true);
-        SynchronizeService.startActionSyncHeight(context);
     }
 
     private void reloadChartData(Function<ChartPoint, Float> groupFunction,
@@ -203,6 +200,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.action_import:
+                intent = new Intent(this, ImportActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_force_sync:
+                SynchronizeService.startActionSyncWeight(context, true);
+                SynchronizeService.startActionSyncHeight(context);
                 return true;
             case R.id.history_activity:
                 intent = new Intent(this, HistoryActivity.class);

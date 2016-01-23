@@ -11,12 +11,15 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.nio.charset.Charset;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import pl.wavesoftware.eid.exceptions.EidRuntimeException;
 
@@ -26,13 +29,13 @@ import pl.wavesoftware.eid.exceptions.EidRuntimeException;
 public class Importer {
 
     private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 'HH:'HH:mm");
-    private DecimalFormat df = new DecimalFormat();
+    private NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 
     @NonNull
-    public List<WeightEntry> parseCsvData(String csvData) {
+    public List<WeightEntry> parseCsvData(File file) {
         List<WeightEntry> list = Lists.newArrayList();
 
-        CSVParser parser = createParser(csvData);
+        CSVParser parser = createParser(file);
         for (CSVRecord csvRecord : parser) {
             if (csvRecord.size() < 2) {
                 continue;
@@ -52,7 +55,7 @@ public class Importer {
 
     private float parseFloat(String weightStr) {
         try {
-            return df.parse(weightStr).floatValue();
+            return numberFormat.parse(weightStr).floatValue();
         } catch (ParseException e) {
             throw new EidRuntimeException("20160121:115705", weightStr, e);
         }
@@ -67,13 +70,13 @@ public class Importer {
     }
 
     @NonNull
-    private CSVParser createParser(String csvData) {
+    private CSVParser createParser(File file) {
         try {
-            return CSVParser.parse(csvData,
+            return CSVParser.parse(file, Charset.forName("UTF-8"),
                     CSVFormat
-                    .newFormat(';')
-                    .withCommentMarker('#')
-                    .withHeader("date", "weight")
+                            .newFormat(';')
+                            .withCommentMarker('#')
+                            .withHeader("date", "weight")
             );
         } catch (IOException e) {
             throw new EidRuntimeException("20160121:115237", e);

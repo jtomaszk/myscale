@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- android:icon="@mipmap/ic_launcher" -->
     <application
@@ -54,8 +55,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name="com.jtomaszk.apps.myscale.services.SynchronizeService"
-            android:exported="false"/>
+            android:name=".services.SynchronizeService"
+            android:exported="false" />
+
+        <activity
+            android:name=".activity.ImportActivity"
+            android:label="@string/title_activity_import"></activity>
     </application>
 
 </manifest>

@@ -10,17 +10,29 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".activity.AddWeightActivity">
 
+    <NumberPicker
+        android:id="@+id/editTextWeight"
+        android:layout_width="100dp"
+        android:layout_height="250dp"
+        android:descendantFocusability="blocksDescendants"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
     <LinearLayout
         android:id="@+id/dateTimePickerLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_toRightOf="@+id/editTextWeight"
+        android:orientation="vertical"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true">
 
         <TextView
             android:id="@+id/editTextDate"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity = "center"
             android:layout_weight="4"
             android:ems="8"
             android:gravity="center"
@@ -29,8 +41,9 @@
 
         <TextView
             android:id="@+id/editTextTime"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity = "center"
             android:layout_weight="4"
             android:ems="4"
             android:gravity="center"
@@ -38,44 +51,29 @@
             android:textSize="25sp" />
     </LinearLayout>
 
-
-    <!--<TextView-->
-        <!--android:id="@+id/editTextWeight"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/dateTimePickerLayout"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:text="XX.X kg"-->
-        <!--android:gravity="center"-->
-        <!--android:textSize="30sp"-->
-        <!--android:ems="10" />-->
-
-    <NumberPicker
-        android:id="@+id/editTextWeight"
-        android:layout_below="@+id/dateTimePickerLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center" />
-        <!--android:layout_centerInParent="true"-->
-
     <ProgressBar
         android:id="@+id/add_loading_spinner"
         style="?android:progressBarStyleLarge"
-        android:layout_below="@+id/editTextWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/buttonAddWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/insertWeight"
+        android:layout_gravity="center"
         android:layout_below="@+id/editTextWeight"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/insertWeight" />
+        android:layout_alignParentBottom="false"
+        android:layout_alignWithParentIfMissing="false" />
+
+
+
 
 
 
