@@ -1,8 +1,11 @@
 package com.jtomaszk.apps.myscale.importer;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.google.common.collect.Lists;
+import com.joestelmach.natty.DateGroup;
+import com.joestelmach.natty.Parser;
 import com.jtomaszk.apps.myscale.entity.DataSource;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.preferences.AppConst;
@@ -21,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import pl.wavesoftware.eid.exceptions.Eid;
 import pl.wavesoftware.eid.exceptions.EidRuntimeException;
 
 /**
@@ -62,11 +66,13 @@ public class Importer {
     }
 
     private Date parseDate(String date) {
-        try {
-            return format.parse(date);
-        } catch (ParseException e) {
-            throw new EidRuntimeException("20160121:115317", date, e);
+        Parser parser = new Parser();
+        List<DateGroup> groups = parser.parse(date);
+        for (DateGroup group : groups) {
+            return group.getDates().get(0);
         }
+
+        throw new EidRuntimeException(new Eid("20160121:115317"), "Could not parse date: %s", date);
     }
 
     @NonNull
