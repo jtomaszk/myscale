@@ -1,13 +1,13 @@
 package com.jtomaszk.apps.myscale.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
+import com.jtomaszk.apps.common.logger.EidLogger;
 import com.jtomaszk.apps.myscale.R;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
@@ -15,15 +15,12 @@ import com.jtomaszk.apps.myscale.importer.Importer;
 import com.jtomaszk.apps.myscale.importer.ImporterService;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 public class ImportActivity extends Activity {
 
-    private static final String TAG = "ImportActivity";
+    private static final EidLogger logger = EidLogger.getLogger();
+
     private static final int PICKFILE_RESULT_CODE = 1;
 
     // Storage Permissions
@@ -34,7 +31,7 @@ public class ImportActivity extends Activity {
 
     /**
      * Checks if the app has permission to write to device storage
-     *
+     * <p/>
      * If the app does not has permission then the user will be prompted to grant permissions
      *
      * @param activity
@@ -78,7 +75,7 @@ public class ImportActivity extends Activity {
             case PICKFILE_RESULT_CODE:
                 if (resultCode == RESULT_OK) {
                     String filePath = data.getData().getPath();
-                    Log.i(TAG, "filePath " + filePath);
+                    logger.i("20160123:160043", "filePath %s", filePath);
 
                     File file = new File(filePath);
                     Importer importer = new Importer();

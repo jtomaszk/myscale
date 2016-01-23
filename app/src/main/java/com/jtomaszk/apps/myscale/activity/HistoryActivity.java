@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.jtomaszk.apps.common.logger.EidLogger;
 import com.jtomaszk.apps.myscale.R;
-import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 
 import java.text.SimpleDateFormat;
@@ -22,7 +22,8 @@ import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    private static final String TAG = "HistoryActivity";
+    private static final EidLogger logger = EidLogger.getLogger();
+
     private Context context;
 
     @Override
@@ -37,7 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
         List<WeightEntry> list = dao.getAllSorted();
 
         ListView listView = (ListView) findViewById(R.id.listView);
-        Log.d(TAG, Arrays.toString(list.toArray()));
+        logger.d("20160123:160003", Arrays.toString(list.toArray()));
         List<String> values = new ArrayList<>(list.size());
         for (WeightEntry entry : list) {
             values.add(convertToViewType(entry));

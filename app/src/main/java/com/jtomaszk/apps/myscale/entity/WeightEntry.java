@@ -18,15 +18,24 @@ import lombok.ToString;
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 @ToString
 public class WeightEntry extends SugarRecord<WeightEntry> {
-    @NonNull @Setter @Getter
+    @NonNull
+    @Setter
+    @Getter
     Float weight;
-    @NonNull @Getter @Setter
+    @NonNull
+    @Getter
+    @Setter
     Long dateTimeMilliseconds;
-    @NonNull @Setter @Getter
+    @NonNull
+    @Setter
+    @Getter
     DataSource dataSource;
-    @Setter @Getter
+    @Setter
+    @Getter
     boolean synced;
-    @NonNull @Setter @Getter
+    @NonNull
+    @Setter
+    @Getter
     String appName;
 
 }

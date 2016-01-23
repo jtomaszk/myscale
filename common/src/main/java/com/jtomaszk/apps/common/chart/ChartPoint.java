@@ -15,9 +15,11 @@ import lombok.Setter;
 @AllArgsConstructor(suppressConstructorProperties = true)
 @EqualsAndHashCode
 public class ChartPoint implements Serializable {
-    @Getter @Setter
+    @Getter
+    @Setter
     private float x;
-    @Getter @Setter
+    @Getter
+    @Setter
     private float y;
 
 }

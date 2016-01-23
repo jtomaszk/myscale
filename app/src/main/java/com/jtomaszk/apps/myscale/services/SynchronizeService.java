@@ -3,14 +3,14 @@ package com.jtomaszk.apps.myscale.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.result.DataReadResult;
-import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
+import com.jtomaszk.apps.common.logger.EidLogger;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.gapi.HeightGFitnessRepository;
 import com.jtomaszk.apps.myscale.gapi.WeightGFitnessRepository;
@@ -26,7 +26,8 @@ import lombok.Setter;
  * a service on a separate handler thread.
  */
 public class SynchronizeService extends IntentService {
-    private static final String TAG = "HistoryActivity";
+
+    private static final EidLogger logger = EidLogger.getLogger();
 
     private static final String ACTION_SYNC_WEIGHT = ".action.ACTION_SYNC_WEIGHT";
     private static final String ACTION_SYNC_HEIGHT = ".action.ACTION_SYNC_HEIGHT";
@@ -83,7 +84,7 @@ public class SynchronizeService extends IntentService {
      * parameters.
      */
     private void handleActionSyncWeight(boolean syncAll) {
-        Log.i(TAG, "handleActionSyncWeight");
+        logger.i("20160123:160601", "handleActionSyncWeight");
         WeightGFitnessRepository weightRepository = new WeightGFitnessRepository(getBaseContext());
 //        weightRepository.deleteAll();
 //        dao.deleteAll();
@@ -99,7 +100,7 @@ public class SynchronizeService extends IntentService {
             for (DataPoint dp : ds.getDataPoints()) {
                 for (Field field : dp.getDataType().getFields()) {
                     float weight = dp.getValue(field).asFloat();
-                    Log.i(TAG,  dp.hashCode() + " " + weight);
+                    logger.i("20160123:160606", dp.hashCode() + " " + weight);
                     dao.addIfNotMatchedFromGooleFit(dp.getTimestamp(TimeUnit.MILLISECONDS),
                             weight, dp.getDataSource().getAppPackageName());
                 }
@@ -115,7 +116,7 @@ public class SynchronizeService extends IntentService {
         int height = HeightUtil.readHeight(getBaseContext());
         long heightTime = HeightUtil.readHeightTime(getBaseContext());
 
-        Log.i(TAG, "handleActionSyncHeight " + height);
+        logger.i("20160123:160611", "handleActionSyncHeight " + height);
 
         HeightGFitnessRepository heightRepository = new HeightGFitnessRepository(getBaseContext());
         DataReadResult dataReadResult = heightRepository.readAll();
@@ -127,7 +128,7 @@ public class SynchronizeService extends IntentService {
         for (DataSet ds : dataReadResult.getDataSets()) {
             for (DataPoint dp : ds.getDataPoints()) {
                 for (Field field : dp.getDataType().getFields()) {
-                    Log.i(TAG, dp.getTimestamp(TimeUnit.MILLISECONDS) + field.getName() + " " + dp.getValue(field).asFloat());
+                    logger.i("20160123:160616", dp.getTimestamp(TimeUnit.MILLISECONDS) + field.getName() + " " + dp.getValue(field).asFloat());
 
                     long time = dp.getTimestamp(TimeUnit.MILLISECONDS);
                     if (time > lastHeightTime) {

@@ -4,17 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jtomaszk.apps.common.logger.EidLogger;
 import com.jtomaszk.apps.common.utils.DateUtil;
 import com.jtomaszk.apps.myscale.R;
-import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -26,11 +26,9 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import pl.wavesoftware.eid.exceptions.Eid;
-
 public class AddWeightActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private static final String TAG = "AddWeightActivity";
+    private static final EidLogger logger = EidLogger.getLogger();
 
     private Context context;
     private DateFormat dateFormat = DateUtil.getDateInstance();
@@ -57,13 +55,13 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
             @Override
             public void onClick(View view) {
                 findViewById(R.id.add_loading_spinner).setVisibility(View.VISIBLE);
-                Log.i(TAG, "SaveWeightClick");
+                logger.i("20160123:155713", "SaveWeightClick");
                 Float weight = (float) weightPicker.getValue() / 10.0F;
 
                 try {
                     Date date = dateTimeFormat.parse(dateText.getText().toString() + " " + timeText.getText().toString());
                     dao.addFromUser(date.getTime(), weight);
-                    Log.i(TAG, "Data insert was successful!");
+                    logger.i("20160123:155721", "Data insert was successful!");
                     AddWeightActivity.this.finish();
                 } catch (ParseException e) {
                     Toast.makeText(getApplicationContext(), "Problem with parse date", Toast.LENGTH_SHORT).show();
@@ -110,9 +108,9 @@ public class AddWeightActivity extends AppCompatActivity implements DatePickerDi
             EditText inputText = (EditText) f.get(weightPicker);
             inputText.setFilters(new InputFilter[0]);
         } catch (NoSuchFieldException e) {
-            Log.e(TAG, new Eid("20160120:233036").toString(), e);
+            logger.e("20160120:233036", e);
         } catch (IllegalAccessException e) {
-            Log.e(TAG, new Eid("20160120:233052").toString(), e);
+            logger.e("20160120:233052", e);
         }
     }
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.IntentSender;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
@@ -16,6 +15,7 @@ import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
+import com.jtomaszk.apps.common.logger.EidLogger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
@@ -28,7 +28,8 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractGFitnessApiClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "FitnessApiClient";
+    private static final EidLogger logger = EidLogger.getLogger();
+
     public static final int REQUEST_OAUTH = 1000;
     private static final String AUTH_PENDING = "auth_state_pending";
 
@@ -46,7 +47,7 @@ public abstract class AbstractGFitnessApiClient implements GoogleApiClient.Conne
         buildFitnessClient(ctx);
 
         // Connect to the Fitness API
-        Log.i(TAG, "Connecting...");
+        logger.i("20160123:160641", "Connecting...");
         mClient.connect();
     }
 
@@ -70,7 +71,7 @@ public abstract class AbstractGFitnessApiClient implements GoogleApiClient.Conne
 
                             @Override
                             public void onConnected(Bundle bundle) {
-                                Log.i(TAG, "Connected!!!");
+                                logger.i("20160123:160652", "Connected!!!");
                                 // Now you can make calls to the Fitness APIs.
                                 // Put application specific code here.
                             }
@@ -80,9 +81,9 @@ public abstract class AbstractGFitnessApiClient implements GoogleApiClient.Conne
                                 // If your connection to the sensor gets lost at some point,
                                 // you'll be able to determine the reason and react to it here.
                                 if (i == GoogleApiClient.ConnectionCallbacks.CAUSE_NETWORK_LOST) {
-                                    Log.i(TAG, "Connection lost.  Cause: Network Lost.");
+                                    logger.i("20160123:160655", "Connection lost.  Cause: Network Lost.");
                                 } else if (i == GoogleApiClient.ConnectionCallbacks.CAUSE_SERVICE_DISCONNECTED) {
-                                    Log.i(TAG, "Connection lost.  Reason: Service Disconnected");
+                                    logger.i("20160123:160659", "Connection lost.  Reason: Service Disconnected");
                                 }
                             }
                         }
@@ -92,7 +93,7 @@ public abstract class AbstractGFitnessApiClient implements GoogleApiClient.Conne
                             // Called whenever the API client fails to connect.
                             @Override
                             public void onConnectionFailed(ConnectionResult result) {
-                                Log.i(TAG, "Connection failed. Cause: " + result.toString());
+                                logger.i("20160123:160708", "Connection failed. Cause: " + result.toString());
                                 if (!result.hasResolution()) {
                                     // Show the localized error dialog
 //                                    GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(),
@@ -104,12 +105,12 @@ public abstract class AbstractGFitnessApiClient implements GoogleApiClient.Conne
                                 // authorization dialog is displayed to the user.
                                 if (!authInProgress) {
                                     try {
-                                        Log.i(TAG, "Attempting to resolve failed connection");
+                                        logger.i("20160123:160712", "Attempting to resolve failed connection");
                                         authInProgress = true;
                                         result.startResolutionForResult(getActivity(),
                                                 REQUEST_OAUTH);
                                     } catch (IntentSender.SendIntentException e) {
-                                        Log.e(TAG, "Exception while starting resolution activity", e);
+                                        logger.e("20160123:160715", "Exception while starting resolution activity", e);
                                     }
                                 }
                             }
@@ -122,19 +123,19 @@ public abstract class AbstractGFitnessApiClient implements GoogleApiClient.Conne
         try {
             return getActivityThrows();
         } catch (NoSuchMethodException e) {
-            Log.e(TAG, e.getMessage(), e);
+            logger.e("20160123:160724", e.getMessage(), e);
             return null;
         } catch (ClassNotFoundException e) {
-            Log.e(TAG, e.getMessage(), e);
+            logger.e("20160123:160729", e.getMessage(), e);
             return null;
         } catch (IllegalAccessException e) {
-            Log.e(TAG, e.getMessage(), e);
+            logger.e("20160123:160733", e.getMessage(), e);
             return null;
         } catch (InvocationTargetException e) {
-            Log.e(TAG, e.getMessage(), e);
+            logger.e("20160123:160738", e.getMessage(), e);
             return null;
         } catch (NoSuchFieldException e) {
-            Log.e(TAG, e.getMessage(), e);
+            logger.e("20160123:160741", e.getMessage(), e);
             return null;
         }
     }

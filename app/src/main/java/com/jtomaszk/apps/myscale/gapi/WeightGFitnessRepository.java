@@ -1,7 +1,6 @@
 package com.jtomaszk.apps.myscale.gapi;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.Fitness;
@@ -14,6 +13,7 @@ import com.google.android.gms.fitness.request.DataDeleteRequest;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 import com.jtomaszk.apps.common.gapi.AbstractGFitnessApiClient;
+import com.jtomaszk.apps.common.logger.EidLogger;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.preferences.AppConst;
 
@@ -27,7 +27,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class WeightGFitnessRepository extends AbstractGFitnessApiClient {
 
-    private static final String TAG = "WeightGFitnessRepository";
+    private static final EidLogger logger = EidLogger.getLogger();
+
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public WeightGFitnessRepository(Context ctx) {
@@ -52,9 +53,9 @@ public class WeightGFitnessRepository extends AbstractGFitnessApiClient {
         Status status = Fitness.HistoryApi.deleteData(mClient, request).await();
 
         if (status.isSuccess()) {
-            Log.i(TAG, "Successfully deleted today's step count data");
+            logger.i("20160123:160528", "Successfully deleted today's step count data");
         } else {
-            Log.i(TAG, "Failed to delete today's step count data");
+            logger.i("20160123:160532", "Failed to delete today's step count data");
         }
     }
 

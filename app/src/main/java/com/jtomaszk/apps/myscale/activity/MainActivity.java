@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,9 +17,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.jtomaszk.apps.common.chart.ChartPoint;
 import com.jtomaszk.apps.common.chart.DataChartBuilder;
+import com.jtomaszk.apps.common.logger.EidLogger;
 import com.jtomaszk.apps.myscale.R;
-import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.dao.WeightEntryDao;
+import com.jtomaszk.apps.myscale.dao.WeightEntryDaoImpl;
 import com.jtomaszk.apps.myscale.entity.WeightEntry;
 import com.jtomaszk.apps.myscale.model.BMI;
 import com.jtomaszk.apps.myscale.model.BMIModel;
@@ -45,12 +45,7 @@ import static com.jtomaszk.apps.myscale.utils.WeightUtil.simpleTransform;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * Track whether an authorization activity is stacking over the current activity, i.e. when
-     * a known auth error is being resolved, such as showing the account chooser or presenting a
-     * consent dialog. This avoids common duplications as might happen on screen rotations, etc.
-     */
-    private static final String TAG = "MainActivity";
+    private static final EidLogger logger = EidLogger.getLogger();
 
     private Context context;
     private List<WeightEntry> list;
@@ -72,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         radioButtonWeek.setOnClickListener(addRadioButtonWeekClick());
         RadioButton radioButtonDay = (RadioButton) findViewById(R.id.radioButtonDay);
         radioButtonDay.setOnClickListener(addRadioButtonDayClick());
-        
+
         context = this;
 //        AbstractGFitnessApiClient.getInstance(context, savedInstanceState);
     }
@@ -156,9 +151,9 @@ public class MainActivity extends AppCompatActivity {
     private DataChartBuilder getDataChartBuilderForGroup(Function<ChartPoint, Float> groupFunction,
                                                          AxisValueFormatter formatter) {
         return new DataChartBuilder()
-                    .addLineGroupBy(simpleTransform(list), groupFunction, avg())
-                    .addAxisX(formatter)
-                    .addAxisY();
+                .addLineGroupBy(simpleTransform(list), groupFunction, avg())
+                .addAxisX(formatter)
+                .addAxisY();
     }
 
     @Override
@@ -169,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "onActivityResult " + requestCode + " " + resultCode + " " + data);
+        logger.i("20160123:160414", "onActivityResult %d %d %s", requestCode, resultCode, data);
 //        if (requestCode == AbstractGFitnessApiClient.REQUEST_OAUTH) {
 //            AbstractGFitnessApiClient.getInstance(context).onActivityResult(resultCode);
 //        }

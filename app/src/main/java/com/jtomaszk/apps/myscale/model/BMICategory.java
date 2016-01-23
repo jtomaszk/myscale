@@ -13,8 +13,7 @@ public enum BMICategory {
     OVERWEIGHT(25, 30),
     MODERATELY_OBESE(30, 35),
     SEVERELY_OBESE(35, 40),
-    VERY_SEVERELY_OBESE(40, 1000),
-    ;
+    VERY_SEVERELY_OBESE(40, 1000),;
 
     @Getter
     private final float from;
